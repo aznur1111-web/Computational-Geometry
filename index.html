@@ -1,0 +1,1851 @@
+<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><meta name="description" content="Az Geometry Lab, a single-file course for computational geometry"><title>Az Geometry Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#111722;--panel:#192230;--panel2:#202b3a;--panel3:#141c27;--line:#2c394b;--line2:#3b4b61;--text:#e8eef7;--muted:#a7b4c7;--subtle:#8190a5;--accent:#8ab4f8;--strong:#c9ddff;--good:#9ed7bd;--warn:#edc477;--bad:#ff929e;--shadow:none;--radius:13px}
+:root[data-theme=light]{color-scheme:light;--bg:#f4f6f8;--panel:#fff;--panel2:#f7f9fb;--panel3:#f0f4f8;--line:#dce2e9;--line2:#cbd4df;--text:#17212d;--muted:#596a7e;--subtle:#718197;--accent:#315fa2;--strong:#244a82;--good:#176b4c;--warn:#8c5c04;--bad:#b33143;--shadow:0 8px 24px rgba(20,35,50,.05)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button,a,select{touch-action:manipulation}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}a{color:var(--accent);text-decoration:none}.muted{color:var(--muted)}.mono,code,pre,textarea{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.topbar{height:64px;position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;padding:0 22px;background:var(--bg);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text)}.brand-mark{width:34px;height:34px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2);display:grid;place-items:center;color:var(--strong);font-weight:850;font-size:15px}.brand strong{display:block;font-size:14px;line-height:1.2}.brand small{display:block;font-size:10px;letter-spacing:.14em;color:var(--muted);margin-top:2px}
+.top-meta{flex:1;color:var(--subtle);font-size:12px;letter-spacing:.02em}
+.top-actions{display:flex;align-items:center;gap:7px}.top-actions label{font-size:11px;color:var(--muted)}
+select,.btn{border:1px solid var(--line2);background:var(--panel3);color:var(--text);border-radius:8px;padding:8px 11px;font-size:12px}.btn{font-weight:600;white-space:nowrap}.btn:hover{border-color:var(--accent);color:var(--strong)}.btn.primary{background:var(--accent);color:#10203a;border-color:var(--accent)}:root[data-theme=light] .btn.primary{color:white}
+.layout{display:grid;grid-template-columns:264px minmax(420px,1fr);max-width:1500px;margin:auto;min-height:calc(100vh - 64px)}
+.sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto;border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column}
+.side-title{display:flex;justify-content:space-between;color:var(--subtle);font-size:10px;letter-spacing:.14em;font-weight:800;padding:0 4px 12px}
+.pill,.tag{border:1px solid var(--line2);border-radius:6px;padding:3px 7px;font-size:10px;color:var(--muted);white-space:nowrap}
+.search{display:flex;gap:7px;align-items:center;border:1px solid var(--line);border-radius:9px;background:var(--panel3);height:39px;padding:0 10px;margin-bottom:10px}
+.search input{min-width:0;width:100%;background:transparent;border:0;outline:0;color:var(--text);font-size:12px}
+.search kbd{border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--subtle);font-size:10px}
+.filter{display:block;color:var(--subtle);font-size:11px;margin-bottom:12px}.filter select{display:block;width:100%;max-width:none;margin-top:5px;padding:7px}
+.tree{display:flex;flex-direction:column;gap:12px}
+.group-label{display:flex;justify-content:space-between;color:var(--subtle);font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 5px}
+.link{width:100%;text-align:left;display:flex;gap:8px;align-items:center;background:transparent;border:1px solid transparent;color:var(--muted);padding:7px 8px;border-radius:8px;min-height:34px}
+.link .num{font:10px ui-monospace,monospace;color:var(--subtle);width:19px;flex:none}
+.link .name{font-size:12px;flex:1}.link .done{color:var(--good)}
+.link:hover{background:var(--panel2);color:var(--text)}
+.link.active{background:var(--panel2);border-color:var(--line2);color:var(--strong)}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}
+.progress-row{display:flex;justify-content:space-between;color:var(--subtle);font-size:11px;margin-bottom:7px}
+.progress{height:5px;background:var(--panel2);border-radius:9px;overflow:hidden}.progress>div{height:100%;width:0;background:var(--accent);transition:width .25s}
+.side-actions{display:flex;gap:6px;margin-top:12px}.side-actions .btn{flex:1;padding:7px;font-size:11px}
+main{max-width:920px;width:100%;min-width:0;margin:auto;padding:28px 30px 40px}
+.breadcrumb{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--subtle);margin-bottom:16px}
+.header{padding:2px 2px 22px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:var(--accent);margin-bottom:9px}
+.header h1{font-size:clamp(27px,3vw,36px);line-height:1.12;letter-spacing:-.035em;margin:0 0 10px;font-weight:700}
+.header p{font-size:14.5px;color:var(--muted);margin:0 0 14px;max-width:740px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag.good{color:var(--good)}.tag.warn{color:var(--warn)}
+.header-actions{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
+.panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow)}
+.panel-head{padding:18px 20px 0}.panel-head h2{font-size:15px;margin:0 0 4px;letter-spacing:-.01em;font-weight:650}.panel-head p{font-size:12.5px;color:var(--muted);margin:0}
+.body{padding:16px 20px 20px}
+.idea{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:20px}
+.idea p{font-size:13.5px;color:var(--muted);margin:0 0 13px}
+.mental{background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:13px}
+.mental small{color:var(--subtle);font-size:10px;letter-spacing:.11em;text-transform:uppercase}
+.mental strong{display:block;margin:6px 0;font-size:13px;color:var(--strong)}
+.mental p{font-size:12px;color:var(--muted);margin:0}
+.takeaway{padding:11px 13px;border:1px solid var(--line2);background:var(--panel3);border-radius:8px;color:var(--strong);font-size:12.5px;line-height:1.6}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mini{background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:13px}
+.mini h3{font-size:12px;margin:0 0 7px;font-weight:650}
+.mini p{font-size:12.5px;color:var(--muted);margin:0;line-height:1.6}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+.steps li{counter-increment:s;display:flex;gap:10px;color:var(--muted);font-size:12.5px;line-height:1.55}
+.steps li:before{content:counter(s);width:23px;height:23px;flex:none;display:grid;place-items:center;border:1px solid var(--line2);background:var(--panel3);border-radius:6px;color:var(--accent);font:11px ui-monospace,monospace}
+.pseudo{white-space:pre-wrap;overflow:auto;background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:14px;font:12px/1.75 ui-monospace,monospace;color:var(--strong);margin:0}
+.table-wrap{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border-bottom:1px solid var(--line);text-align:left;padding:9px 10px;vertical-align:top}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle);font-weight:700}
+td{color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{padding:12px;background:var(--panel3);border:1px solid var(--line);border-radius:9px}
+.tile span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle)}
+.tile strong{display:block;color:var(--strong);font:700 14px ui-monospace,monospace;margin-top:6px}
+.tile small{font-size:10.5px;color:var(--muted);display:block;margin-top:2px}
+.notice{padding:12px 13px;background:var(--panel3);border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:9px;font-size:12.5px;color:var(--muted);line-height:1.65}
+.notice strong{color:var(--warn)}
+.notice.info{border-color:var(--line2)}.notice.info strong{color:var(--accent)}
+.lab-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lab-top label{font-size:11.5px;color:var(--muted)}
+.lab-input{width:100%;min-height:100px;resize:vertical;background:var(--panel3);border:1px solid var(--line2);border-radius:9px;padding:11px;color:var(--text);font:12px/1.65 ui-monospace,monospace;margin:11px 0}
+.lab-output{padding:13px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;min-height:70px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--strong);font:12px/1.75 ui-monospace,monospace;overflow-x:auto}
+.lab-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.label{font-size:10px;color:var(--subtle);font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+.code-head{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:11px 13px;background:var(--panel3);border-bottom:1px solid var(--line)}
+.code-editor{display:block;width:100%;min-height:220px;resize:vertical;border:0;border-radius:0;background:var(--panel3);color:var(--text);padding:15px;font:12px/1.7 ui-monospace,monospace;outline:0}
+.code-foot{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:9px 13px;color:var(--subtle);font-size:10px;border-top:1px solid var(--line)}
+.practice{border:1px solid var(--line);background:var(--panel3);border-radius:9px;padding:13px}
+.practice summary{cursor:pointer;font-size:12.5px;font-weight:600}
+.practice p{font-size:12.5px;color:var(--muted);margin:10px 0 0;line-height:1.65}
+.references{display:flex;flex-direction:column;gap:8px}
+.references a{font-size:12.5px;overflow-wrap:anywhere}
+.home-hero{padding:30px;background:linear-gradient(150deg,var(--panel),var(--panel3));border:1px solid var(--line);border-radius:14px;margin-bottom:16px}
+.home-hero h1{font-size:clamp(30px,3.6vw,42px);line-height:1.1;letter-spacing:-.04em;margin:8px 0 14px;font-weight:700}
+.home-hero p{color:var(--muted);font-size:14px;max-width:720px;margin:0 0 18px;line-height:1.65}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat strong{display:block;font:700 22px ui-monospace,monospace;color:var(--strong)}
+.stat span{display:block;font-size:10.5px;color:var(--muted);margin-top:3px}
+.chapter-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chapter-card{padding:14px;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text)}
+.chapter-card:hover{border-color:var(--accent)}
+.chapter-card .num{font-size:10px;color:var(--accent);letter-spacing:.09em;font-weight:800}
+.chapter-card strong{display:block;font-size:13px;margin:5px 0;font-weight:650}
+.chapter-card p{font-size:11.5px;color:var(--muted);margin:0;line-height:1.55}
+.toast{position:fixed;z-index:99;bottom:20px;left:50%;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:var(--panel);border:1px solid var(--line2);border-radius:9px;padding:11px 15px;box-shadow:var(--shadow);font-size:12px;transition:opacity .14s,transform .14s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.footer{font-size:10.5px;color:var(--subtle);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:6px 2px 14px;align-items:center}
+.geo-svg{width:100%;height:auto;display:block;background:var(--bg);border:1px solid var(--line);border-radius:8px;margin:6px 0}
+@media(max-width:1080px){.layout{grid-template-columns:240px minmax(360px,1fr)}main{padding:24px 22px 36px}}
+@media(max-width:840px){.topbar{height:auto;min-height:60px;flex-wrap:wrap;gap:10px;padding:10px 14px}.top-meta{display:none}.top-actions{margin-left:auto}.top-actions label{display:none}.layout{display:block}.sidebar{position:static;height:auto;max-height:none;border:0;border-bottom:1px solid var(--line);padding:14px}.tree{max-height:260px;overflow:auto}.side-foot{display:none}main{padding:20px 15px 32px}.idea{grid-template-columns:1fr}.mental{order:-1}.stats{grid-template-columns:1fr 1fr}.chapter-cards,.two,.lab-cols{grid-template-columns:1fr}}
+@media(max-width:520px){.brand small{display:none}.brand-mark{width:30px;height:30px}.brand strong{font-size:12px}.top-actions select{max-width:92px;padding:6px;font-size:10px}.top-actions .btn{padding:6px 8px;font-size:10px}.chapter-cards{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}.home-hero{padding:20px}.home-hero h1{font-size:30px}.header h1{font-size:27px}.body,.panel-head{padding-left:15px;padding-right:15px}.footer{display:block}.footer span{display:block;margin-bottom:6px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+@media print{.topbar,.sidebar,.header-actions,.lab-top,.btn,.toast{display:none!important}.layout{display:block}main{padding:0;max-width:none}.panel,.home-hero{break-inside:avoid;box-shadow:none}body{background:#fff;color:#111}}
+</style></head><body>
+
+<header class="topbar">
+  <a class="brand" href="#home" id="homeLink"><span class="brand-mark">Az</span><span><strong>Az Geometry Lab</strong><small>COMPUTATIONAL GEOMETRY</small></span></a>
+  <div class="top-meta" id="catalogCount"></div>
+  <div class="top-actions">
+    <label for="themeSelect">Theme</label>
+    <select id="themeSelect" aria-label="Theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select>
+    <button class="btn" id="printBtn">Print / PDF</button>
+    <button class="btn" id="exportBtn">Export</button>
+    <button class="btn" id="importBtn">Import</button>
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" aria-label="Course navigation">
+    <div class="side-title"><span>COURSE CATALOG</span><span class="pill" id="lessonCount">0</span></div>
+    <div class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Search geometry topics…" aria-label="Search lessons"><kbd>/</kbd></div>
+    <label class="filter">Chapter<select id="chapterFilter"><option value="all">All chapters</option></select></label>
+    <nav class="tree" id="courseTree" aria-label="Lessons"></nav>
+    <div class="side-foot">
+      <div class="progress-row"><span>COURSE PROGRESS</span><strong id="progressText">0 / 0</strong></div>
+      <div class="progress" id="progressBar"><div id="progressFill"></div></div>
+      <div class="side-actions"><button class="btn" data-page="home">Home</button><button class="btn" data-page="progress">Progress</button></div>
+    </div>
+  </aside>
+  <main id="mainView" tabindex="-1" aria-live="polite"></main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   Az Geometry Lab
+   ============================================================ */
+const CHAPTERS=[
+ {id:"primitives",title:"1. Geometric primitives",desc:"Points, vectors, orientation, cross products, distances and robust predicates.",ids:["points-vectors","orientation","distances","robust-predicates"]},
+ {id:"segments-polygons",title:"2. Segment and polygon problems",desc:"Line and segment intersection, point-in-polygon, winding numbers and clipping.",ids:["line-intersection","segment-intersection","point-in-polygon","polygon-clipping"]},
+ {id:"convex-hulls",title:"3. Convex hulls",desc:"Graham scan, Andrew monotone chain, Jarvis march and Quickhull.",ids:["graham-scan","monotone-chain","jarvis-march","quickhull"]},
+ {id:"proximity",title:"4. Proximity and spatial structures",desc:"Nearest pair, k-d trees, range trees, point location and sweep line.",ids:["nearest-pair","kd-trees-geo","range-trees","sweep-line"]},
+ {id:"voronoi",title:"5. Voronoi and Delaunay",desc:"Fortune's algorithm, Bowyer-Watson, Delaunay triangulation and Lloyd relaxation.",ids:["fortune","bowyer-watson","delaunay","lloyd-relaxation"]},
+ {id:"hull-apps",title:"6. Hull applications",desc:"Rotating calipers, diameter, minimum-area rectangle and Welzl smallest circle.",ids:["rotating-calipers","diameter-minrect","welzl-circle","hull-applications"]},
+ {id:"arrangements",title:"7. Advanced regions and arrangements",desc:"Half-plane intersection, line arrangements, alpha shapes and medial axis.",ids:["half-plane-intersection","line-arrangements","alpha-shapes","medial-axis"]},
+ {id:"collision",title:"8. Collision and motion geometry",desc:"Separating axis theorem, GJK, EPA, Minkowski sums and continuous collision.",ids:["sat","gjk-epa","minkowski-ccd"]},
+ {id:"simplification",title:"9. Simplification and surface extraction",desc:"Douglas-Peucker, marching squares, marching cubes and mesh decimation.",ids:["douglas-peucker","marching-squares","marching-cubes"]},
+ {id:"registration",title:"10. Registration, fitting and pathfinding",desc:"RANSAC, ICP, homography, D* Lite, Theta* and Jump Point Search.",ids:["ransac","icp-homography","dstar-lite","jps-theta"]}
+];
+
+const D={
+ kind:"Concept",status:"Concept lesson",level:2,demo:"none",demoTitle:"Interactive teaching lab",inputKind:"points",refs:[],codeKey:"generic",
+ input:"Points, segments, polygons or geometric objects plus the parameters of the method.",
+ output:"A predicate, a geometric structure, a partition or an optimal shape.",
+ invariant:"The algorithm's correctness relies on a geometric property it exploits. Breaking that property gives wrong answers without an error.",
+ complexity:["Depends on the number of input objects","Depends on the data structure","Measure on representative inputs"],
+ uses:"Use this as one layer inside a larger geometric pipeline.",
+ strength:"Fits the problem it was designed for when its assumptions hold.",
+ limits:"Depends on degeneracies, floating point precision and data distribution.",
+ pitfall:"A method that works on generic inputs can fail on collinear or duplicate points. Always handle degeneracies.",
+ question:"What is the main idea of this lesson?",
+ trace:null
+};
+function mk(o){
+ const steps=o.steps||["Read the geometric input.","Apply the algorithm.","Produce the result.","Check correctness."];
+ return Object.assign({},D,{
+  summary:o.summary||"",
+  mental:o.mental||o.title,
+  mentalText:o.mentalText||o.summary||"",
+  problem:o.problem||("How does "+o.title+" work and when is it the right choice?"),
+  steps:steps,
+  trace:o.trace||steps.map((s,i)=>["Step "+(i+1),s,i===steps.length-1?"Verified":"Step done"]),
+  answer:o.answer||o.summary||"",
+  pseudo:o.pseudo||"",
+  sample:o.sample||"",
+  level:o.level||2
+ },o);
+}
+
+const RAW=[
+/* Chapter 1 */
+{id:"points-vectors",title:"Points, vectors and basic operations",level:1,kind:"Foundation",status:"Runnable teaching lab",
+ summary:"A point is a location, a vector is a displacement. Difference of two points gives a vector. Sum of a point and a vector gives a point. Distinguish the two to avoid bugs.",
+ mental:"Points are places, vectors are arrows",
+ mentalText:"A point answers where. A vector answers how far in which direction. Adding two points is meaningless; adding a point and a vector gives a new point.",
+ steps:["Represent points and vectors as (x, y) tuples.","Point minus point gives a vector.","Point plus vector gives a point.","Vector plus vector gives a vector.","Scale a vector by a number."],
+ pseudo:"Points and vectors are both stored as (x, y).\nThe meaning depends on use.\n\nPoint + Vector = Point\nPoint - Point  = Vector\nVector + Vector = Vector\nVector * scalar = Vector\n\nDot product: a · b = a.x*b.x + a.y*b.y\n  measures alignment\n  a · b = 0 means perpendicular\n\nCross product (2D): a x b = a.x*b.y - a.y*b.x\n  scalar in 2D; magnitude is the area of the parallelogram\n  sign tells orientation (left/right)",
+ uses:"Every geometry algorithm. Game engines, CAD, GIS, robotics, computer vision.",
+ strength:"Simple representation that composes well.",
+ limits:"Floating point rounding. Points and vectors have no compile-time distinction in many languages.",
+ pitfall:"Confusing points and vectors in code leads to subtle bugs, especially in transformations.",
+ question:"If P = (3, 4) is a point and v = (1, 2) is a vector, what is P + v?",
+ answer:"(4, 6). A point plus a vector is a point.",
+ demo:"points",sample:"1 2\n4 5",refs:[
+  ["O'Rourke, Computational Geometry in C, Cambridge 1998","https://www.cambridge.org/core/books/computational-geometry-in-c/"],
+  ["de Berg et al., Computational Geometry: Algorithms and Applications, Springer 2008","https://link.springer.com/book/10.1007/978-3-540-77974-2"],
+  ["Ericson, Real-Time Collision Detection, Morgan Kaufmann 2004","https://www.sciencedirect.com/book/9781558607323/real-time-collision-detection"]]},
+{id:"orientation",title:"Orientation and cross products",level:1,kind:"Predicate",status:"Runnable teaching lab",
+ summary:"The orientation of three points tells whether they turn left, right or stay collinear. It is the single most important predicate in computational geometry.",
+ mental:"Left turn, right turn or straight ahead",
+ mentalText:"Imagine walking A to B. If C is to your left, the orientation is counterclockwise. Right means clockwise. In line means collinear.",
+ steps:["Read three points A, B, C.","Compute cross = (B - A) × (C - A).","Positive means counterclockwise (left turn).","Negative means clockwise (right turn).","Zero means collinear."],
+ pseudo:"cross(A, B, C) = (B.x - A.x)*(C.y - A.y) - (B.y - A.y)*(C.x - A.x)\n\n  > 0: C is to the left of AB (counterclockwise)\n  < 0: C is to the right of AB (clockwise)\n  = 0: A, B, C collinear\n\nDetermines orientation in O(1).\nUsed in:\n  convex hull (which side to keep)\n  segment intersection (do segments cross?)\n  point-in-polygon (winding direction)\n  triangulation (which triangle orientation)",
+ invariant:"The cross product is a signed area. Its sign is invariant under rotation, changes under reflection.",
+ uses:"Everything in computational geometry. It is the base predicate.",
+ strength:"O(1), exact in integer arithmetic.",
+ limits:"Floating point can give the wrong sign near-collinear cases.",
+ pitfall:"A small numerical error can flip the sign. For critical applications use exact arithmetic.",
+ question:"Is (0,0), (1,0), (1,1) counterclockwise?",
+ answer:"Yes. Cross = (1-0)*(1-0) - (0-0)*(1-0) = 1 > 0, so counterclockwise.",
+ demo:"orientation",sample:"0 0\n1 0\n1 1\n\n0 0\n1 0\n1 -1\n\n0 0\n1 1\n2 2",refs:[
+  ["Shewchuk, Robust Adaptive Floating-Point Geometric Predicates, SoCG 1996","https://doi.org/10.1145/237218.237337"],
+  ["de Berg et al., Computational Geometry, Chapter 1","https://link.springer.com/book/10.1007/978-3-540-77974-2"],
+  ["O'Rourke, Computational Geometry in C, Section 1.5","https://www.cambridge.org/core/books/computational-geometry-in-c/"]]},
+{id:"distances",title:"Distances and metrics",level:1,kind:"Foundation",status:"Runnable teaching lab",
+ summary:"Distance between points, point to line, point to segment. Each has a distinct formula and O(1) cost. Choosing the wrong one is a common bug.",
+ mental:"Different ways to measure how far apart things are",
+ mentalText:"Point-to-point is a straight line. Point-to-line is perpendicular. Point-to-segment clamps the projection to the segment endpoints.",
+ steps:["Point-point: Euclidean distance.","Point-line: absolute value of perpendicular distance.","Point-segment: project the point onto the line and clamp t to [0,1].","Point-polygon: minimum over edges."],
+ pseudo:"point_point(a, b) = sqrt((a.x-b.x)^2 + (a.y-b.y)^2)\n\npoint_line(p, a, b):\n  # line through a and b\n  return |cross(a, b, p)| / |b - a|\n\npoint_segment(p, a, b):\n  ab = b - a\n  ap = p - a\n  t = dot(ap, ab) / dot(ab, ab)\n  t = clamp(t, 0, 1)\n  closest = a + t * ab\n  return |p - closest|",
+ uses:"Collision detection, clustering, nearest neighbour, path planning, snapping.",
+ strength:"O(1) each. Simple formulas.",
+ limits:"Square roots are expensive. Compare squared distances when possible.",
+ pitfall:"Using point-line distance when you meant point-segment distance. The projection may fall outside the segment.",
+ question:"What is the distance from (3, 4) to the segment from (0, 0) to (1, 0)?",
+ answer:"The projection falls at t = 3 which clamps to 1, so the closest point is (1, 0). Distance is sqrt((3-1)² + 4²) = sqrt(20) ≈ 4.472.",
+ demo:"distances",sample:"0 0\n4 0\n2 3",refs:[
+  ["Ericson, Real-Time Collision Detection, Chapter 5","https://www.sciencedirect.com/book/9781558607323/real-time-collision-detection"],
+  ["O'Rourke, Computational Geometry in C, Section 1.6","https://www.cambridge.org/core/books/computational-geometry-in-c/"],
+  ["Wikipedia, Distance from a point to a line","https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line"]]},
+{id:"robust-predicates",title:"Robust geometric predicates",level:4,kind:"Numerical",status:"Concept lesson",
+ summary:"Floating point arithmetic can give the wrong sign for the orientation predicate near collinear points. Robust predicates use exact arithmetic or adaptive precision to guarantee correctness.",
+ mental:"Get the sign right, whatever it takes",
+ mentalText:"A tiny numerical error in the sign of a cross product can make an algorithm produce a wrong answer. Robust predicates fix this.",
+ steps:["Identify critical predicates (orientation, incircle).","Detect when the floating point computation is uncertain.","Fall back to exact arithmetic or a higher-precision expansion.","Return the correct sign."],
+ pseudo:"Floating point filter for orientation:\n  det = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x)\n  errbound = ccwerrboundA * (|...|)\n  if |det| > errbound: return sign(det)   # confident\n  else: use exact arithmetic\n\nShewchuk's adaptive predicates:\n  Uses floating point expansions (arbitrary precision arrays of doubles)\n  For most inputs, only the first approximation is used\n  Falls back to higher precision only when needed\n  Same asymptotic speed as floating point\n\nLibraries:\n  Shewchuk's predicates (C)\n  CGAL exact predicates\n  Boost.Geometry",
+ uses:"Delaunay triangulation, Voronoi diagrams, convex hull, arrangements, any critical computation.",
+ strength:"Guarantees correct sign even near degeneracies.",
+ limits:"Slower than pure floating point. Requires exact arithmetic libraries.",
+ pitfall:"Floating point alone can give wrong signs for nearly collinear points. This is a common cause of subtle bugs in production geometry code.",
+ question:"Why is orientation more sensitive than distance?",
+ answer:"Orientation is a sign; a tiny change near zero flips the sign. Distance is continuous so small errors stay small.",
+ demo:"none",sample:"",refs:[
+  ["Shewchuk, Adaptive Precision Floating-Point Arithmetic and Fast Robust Geometric Predicates, Discrete & Computational Geometry 1997","https://doi.org/10.1007/PL00009321"],
+  ["Shewchuk, Robust Adaptive Floating-Point Geometric Predicates, SoCG 1996","https://doi.org/10.1145/237218.237337"],
+  ["CGAL documentation, Exact predicates","https://doc.cgal.org/latest/Kernel_23/index.html"]]},
+/* Chapter 2 */
+{id:"line-intersection",title:"Line and segment intersection",level:3,kind:"Predicate",status:"Runnable teaching lab",
+ summary:"Two line segments intersect if the endpoints of each segment are on opposite sides of the other segment. Compute with orientations.",
+ mental:"Are the endpoints on opposite sides?",
+ mentalText:"Two segments cross if and only if each segment's endpoints straddle the line through the other.",
+ steps:["Compute orientation of A, B, C and A, B, D.","Compute orientation of C, D, A and C, D, B.","If the signs are opposite for both pairs, the segments intersect.","Handle collinear and touching cases separately."],
+ pseudo:"segments_intersect(A, B, C, D):\n  o1 = orient(A, B, C)\n  o2 = orient(A, B, D)\n  o3 = orient(C, D, A)\n  o4 = orient(C, D, B)\n\n  if o1 != o2 and o3 != o4: return True\n  if o1 == 0 and on_segment(A, B, C): return True\n  if o2 == 0 and on_segment(A, B, D): return True\n  if o3 == 0 and on_segment(C, D, A): return True\n  if o4 == 0 and on_segment(C, D, B): return True\n  return False\n\nO(1) per pair, O(n^2) for all pairs.",
+ uses:"Collision detection, GIS, path planning, computational geometry pipelines.",
+ strength:"O(1) per pair. Simple and exact with robust orientation.",
+ limits:"All-pairs is quadratic. Use a sweep line for large inputs.",
+ pitfall:"Forgetting collinear cases. Two segments can overlap partially without either endpoint being inside the other.",
+ question:"Do segments (0,0)-(1,1) and (0,1)-(1,0) intersect?",
+ answer:"Yes. They cross at (0.5, 0.5). The orientations have opposite signs.",
+ demo:"segments",sample:"0 0 1 1\n0 1 1 0\n\n0 0 1 1\n2 2 3 3\n\n0 0 4 0\n1 0 3 0",refs:[
+  ["CLRS, Introduction to Algorithms, Section 33.1 Line-segment properties","https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/"],
+  ["de Berg et al., Computational Geometry, Chapter 2","https://link.springer.com/book/10.1007/978-3-540-77974-2"],
+  ["O'Rourke, Computational Geometry in C, Section 1.3","https://www.cambridge.org/core/books/computational-geometry-in-c/"]]},
+{id:"segment-intersection",title:"All-pairs segment intersection",level:4,kind:"Sweep line",status:"Concept lesson",
+ summary:"Report all pairs of intersecting segments in O((n + k) log n) time with a sweep line. Without it, all-pairs is O(n²).",
+ mental:"Sweep a vertical line and stop at events",
+ mentalText:"Move a vertical line from left to right. Maintain the segments currently crossing it. Whenever two become adjacent, check for intersection.",
+ steps:["Create events: left endpoint, right endpoint, intersection.","Sort events by x-coordinate.","Maintain an ordered set of active segments.","On a left endpoint, insert and check the two neighbours.","On a right endpoint, remove.","On an intersection, swap the two segments and report."],
+ pseudo:"bentley_ottmann(segments):\n  events = []\n  for s in segments:\n    events.append((s.left, 'insert', s))\n    events.append((s.right, 'delete', s))\n  sort events by x, then y\n  active = sorted set by y at current sweep x\n  for (x, type, s) in events:\n    if type == 'insert':\n      active.add(s)\n      check_neighbors(active, s)   # report intersections\n    elif type == 'delete':\n      check_neighbors_after_delete(active, s)\n      active.remove(s)\n\nComplexity: O((n + k) log n)\nn = number of segments, k = number of intersections",
+ uses:"GIS, VLSI, collision detection in 2D, map overlay, arrangement construction.",
+ strength:"Sub-quadratic when there are few intersections.",
+ limits:"Complex to implement. Needs robust predicates and event handling.",
+ pitfall:"Handling intersection events correctly is subtle. Numerical drift can cause the sweep to miss events.",
+ question:"When is the sweep line not better than all-pairs?",
+ answer:"When k is O(n²) (dense intersections), the sweep is also O(n²). In that case all-pairs is simpler.",
+ demo:"none",sample:"",refs:[
+  ["Bentley and Ottmann, Algorithms for reporting and counting geometric intersections, IEEE TC 1979","https://doi.org/10.1109/TC.1979.1675432"],
+  ["de Berg et al., Computational Geometry, Chapter 2","https://link.springer.com/book/10.1007/978-3-540-77974-2"],
+  ["CLRS, problem 33-1 on segment intersection","https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/"]]},
+{id:"point-in-polygon",title:"Point in polygon: ray casting and winding",level:3,kind:"Predicate",status:"Runnable teaching lab",
+ summary:"Decide whether a point lies inside a simple polygon. Ray casting counts crossings. Winding number counts signed turns and handles self-intersections.",
+ mental:"Cast a ray and count how often you cross the boundary",
+ mentalText:"From the query point, shoot a ray to infinity. Every boundary crossing flips inside/outside. Odd count means inside.",
+ steps:["Pick a ray direction, usually +x.","For each polygon edge, check if it crosses the ray.","Count crossings.","Odd count means inside.","Winding number: sum the signed angles or use the orientation."],
+ pseudo:"ray_cast(polygon, p):\n  inside = False\n  for i in range(len(polygon)):\n    a, b = polygon[i], polygon[(i+1) % len(polygon)]\n    if ((a.y > p.y) != (b.y > p.y)):\n      x_intersect = a.x + (p.y - a.y) / (b.y - a.y) * (b.x - a.x)\n      if p.x < x_intersect:\n        inside = not inside\n  return inside\n\nwinding_number(polygon, p):\n  wn = 0\n  for each edge (a, b):\n    if a.y <= p.y:\n      if b.y > p.y and orient(a, b, p) > 0: wn += 1\n    else:\n      if b.y <= p.y and orient(a, b, p) < 0: wn -= 1\n  return wn != 0",
+ uses:"Point location, mouse picking, GIS, game engines.",
+ strength:"O(n) per query. Simple.",
+ limits:"Boundary cases need care. Ray casting on vertices must be consistent.",
+ pitfall:"A ray passing exactly through a vertex can be counted twice or zero times. Use half-open rules.",
+ question:"For a simple polygon, is the winding number always 0 or 1?",
+ answer:"Yes for points inside or outside respectively, assuming counterclockwise ordering.",
+ demo:"point-in-poly",sample:"0 0\n5 0\n5 5\n0 5\n\n2 2\n6 6\n-1 2",refs:[
+  ["Shimrat, Algorithm 112: Position of point relative to polygon, CACM 1962","https://doi.org/10.1145/368637.368653"],
+  ["Sutherland et al., A characterization of ten hidden-surface algorithms, ACM Comput. Surv. 1974","https://doi.org/10.1145/356625.356626"],
+  ["Ericson, Real-Time Collision Detection, Section 5.4","https://www.sciencedirect.com/book/9781558607323/real-time-collision-detection"]]},
+{id:"polygon-clipping",title:"Polygon clipping: Sutherland-Hodgman and Weiler-Atherton",level:5,kind:"Algorithm",status:"Concept lesson",
+ summary:"Clip a subject polygon by a clip polygon. Sutherland-Hodgman handles convex clippers. Weiler-Atherton handles arbitrary clippers and preserves holes.",
+ mental:"Cut a polygon into the part that fits inside a window",
+ mentalText:"Walk the subject polygon edge by edge. Keep the parts inside the clip polygon. Add the intersections.",
+ steps:["For each clip edge:","Walk the subject polygon.","Keep the parts that are on the inside of the clip edge.","Add intersection points at the boundary.","The result is the clipped polygon."],
+ pseudo:"sutherland_hodgman(subject, clip):\n  output = subject\n  for each edge (a, b) of clip:\n    input = output\n    output = []\n    for i in range(len(input)):\n      cur = input[i]\n      prev = input[(i-1+len(input)) % len(input)]\n      cur_inside = is_inside(cur, a, b)\n      prev_inside = is_inside(prev, a, b)\n      if cur_inside:\n        if not prev_inside:\n          output.append(intersection(prev, cur, a, b))\n        output.append(cur)\n      elif prev_inside:\n        output.append(intersection(prev, cur, a, b))\n  return output\n\nOnly works for convex clip polygons.\nWeiler-Atherton: arbitrary clip polygons, handles holes.",
+ uses:"Computer graphics, GIS, CAD, image processing.",
+ strength:"Sutherland-Hodgman is simple and fast.",
+ limits:"Only works with convex clippers. Weiler-Atherton is complex.",
+ pitfall:"Concave clip polygons break Sutherland-Hodgman. Use Weiler-Atherton or triangulate first.",
+ question:"What type of polygon can Sutherland-Hodgman clip against?",
+ answer:"A convex clip polygon. Concave clip polygons need a different algorithm.",
+ demo:"none",sample:"",refs:[
+  ["Sutherland and Hodgman, Reentrant polygon clipping, CACM 1974","https://doi.org/10.1145/360767.360802"],
+  ["Weiler and Atherton, Hidden surface removal using polygon area sorting, SIGGRAPH 1977","https://doi.org/10.1145/563858.563896"],
+  ["Foley et al., Computer Graphics: Principles and Practice, Chapter 3","https://www.pearson.com/en-us/subject-catalog/p/computer-graphics-principles-and-practice/P200000003445"]]},
+/* Chapter 3 */
+{id:"graham-scan",title:"Graham scan",level:3,kind:"Convex hull",status:"Runnable teaching lab",
+ summary:"Sort points by angle around a pivot, then walk the sorted list maintaining a left turn. O(n log n) dominated by the sort.",
+ mental:"Sort by angle and stack the left turns",
+ mentalText:"Pick the lowest point as pivot. Sort all others by polar angle. Push points onto a stack, popping when the turn is not counterclockwise.",
+ steps:["Find the lowest (and leftmost) pivot.","Sort the other points by angle from the pivot.","Initialize the stack with pivot and the first two points.","For each next point, while the top three make a clockwise turn, pop.","Push the point."],
+ pseudo:"graham_scan(points):\n  p0 = min by (y, x)\n  sort points[1:] by polar angle around p0\n  stack = [points[0], points[1]]\n  for p in points[2:]:\n    while len(stack) >= 2 and orient(stack[-2], stack[-1], p) <= 0:\n      stack.pop()\n    stack.append(p)\n  return stack\n\nTime: O(n log n)\nSpace: O(n)\nProduces the hull in counterclockwise order.",
+ invariant:"The stack always holds the hull of the points seen so far. Popping keeps the hull convex.",
+ uses:"Convex hull, image processing, pattern recognition, path planning.",
+ strength:"Simple, O(n log n).",
+ limits:"Angular sort is sensitive to ties. Degenerate cases (collinear points) need care.",
+ pitfall:"Comparing angles with atan2 is slow and imprecise. Compare using cross product instead.",
+ question:"What is the time complexity of Graham scan?",
+ answer:"O(n log n) dominated by the angular sort. The scan itself is O(n).",
+ demo:"graham",sample:"0 3\n1 1\n2 2\n4 4\n0 0\n1 2\n3 1\n3 3",refs:[
+  ["Graham, An efficient algorithm for determining the convex hull of a finite planar set, Information Processing Letters 1972","https://doi.org/10.1016/0020-0190(72)90045-2"],
+  ["Preparata and Shamos, Computational Geometry: An Introduction, Springer 1985","https://link.springer.com/book/10.1007/978-1-4612-1098-6"],
+  ["O'Rourke, Computational Geometry in C, Section 3.6","https://www.cambridge.org/core/books/computational-geometry-in-c/"]]},
+{id:"monotone-chain",title:"Andrew's monotone chain",level:3,kind:"Convex hull",status:"Runnable teaching lab",
+ summary:"Andrew's monotone chain sorts points lexicographically and builds the lower and upper hull separately. Simpler and more robust than Graham scan.",
+ mental:"Build lower hull then upper hull",
+ mentalText:"Sort all points by x then y. Walk left to right building the lower hull. Walk right to left building the upper hull. Concatenate.",
+ steps:["Sort points lexicographically.","Build lower hull: walk sorted points, maintain left turns.","Build upper hull: walk reverse sorted points, maintain left turns.","Concatenate and drop the last point of each."],
+ pseudo:"monotone_chain(points):\n  points = sorted(points)\n  if len(points) <= 1: return points\n  lower = []\n  for p in points:\n    while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:\n      lower.pop()\n    lower.append(p)\n  upper = []\n  for p in reversed(points):\n    while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:\n      upper.pop()\n    upper.append(p)\n  return lower[:-1] + upper[:-1]\n\nTime: O(n log n)\nSpace: O(n)",
+ uses:"Convex hull, robust replacement for Graham scan, competitive programming.",
+ strength:"No angular sort. Handles collinear points cleanly.",
+ limits:"Needs to sort twice (once reversed). Both scans are linear so total is still O(n log n).",
+ pitfall:"The <= vs < in the pop condition determines whether collinear points are kept. Pick a convention.",
+ question:"How does monotone chain avoid the trigonometric sort of Graham scan?",
+ answer:"It uses lexicographic sort by x and y, which is a standard comparison sort. No angles needed.",
+ demo:"monotone",sample:"0 3\n1 1\n2 2\n4 4\n0 0\n1 2\n3 1\n3 3",refs:[
+  ["Andrew, Another efficient algorithm for convex hulls in two dimensions, Information Processing Letters 1979","https://doi.org/10.1016/0020-0190(79)90072-3"],
+  ["cp-algorithms.com, Convex hull construction","https://cp-algorithms.com/geometry/convex-hull.html"],
+  ["O'Rourke, Computational Geometry in C, Section 3.6","https://www.cambridge.org/core/books/computational-geometry-in-c/"]]},
+{id:"jarvis-march",title:"Jarvis march (gift wrapping)",level:3,kind:"Convex hull",status:"Runnable teaching lab",
+ summary:"Start at the lowest point and repeatedly pick the next hull point as the one making the smallest counterclockwise turn. O(nh) where h is the hull size.",
+ mental:"Wrap a string around the point set",
+ mentalText:"Start at the leftmost point. Each step, find the point that makes the next clockwise turn. Repeat until you return to the start.",
+ steps:["Find the leftmost (or lowest) point.","Set current to that point.","Find the point p such that all other points are to the right of current to p.","Move current to p.","Repeat until returning to start."],
+ pseudo:"jarvis_march(points):\n  p0 = leftmost point\n  hull = [p0]\n  current = p0\n  while True:\n    next_p = points[0] if points[0] != current else points[1]\n    for p in points:\n      if p == current: continue\n      if orient(current, next_p, p) < 0:   # p is to the right\n        next_p = p\n    if next_p == p0: break\n    hull.append(next_p)\n    current = next_p\n  return hull\n\nTime: O(n * h)\nh = hull size",
+ uses:"Convex hull when h is small. Teaching. Output-sensitive algorithms.",
+ strength:"Output-sensitive: O(nh). Fast when the hull is small.",
+ limits:"O(n²) when all points are on the hull.",
+ pitfall:"When several points are collinear with the current edge, choose the farthest one to avoid adding interior points.",
+ question:"When is Jarvis march faster than Graham scan?",
+ answer:"When h is much smaller than n. Then O(nh) beats O(n log n).",
+ demo:"jarvis",sample:"0 3\n1 1\n2 2\n4 4\n0 0\n1 2\n3 1\n3 3",refs:[
+  ["Jarvis, On the identification of the convex hull of a finite set of points in the plane, Information Processing Letters 1973","https://doi.org/10.1016/0020-0190(73)90020-3"],
+  ["Preparata and Shamos, Computational Geometry: An Introduction","https://link.springer.com/book/10.1007/978-1-4612-1098-6"],
+  ["O'Rourke, Computational Geometry in C, Section 3.5","https://www.cambridge.org/core/books/computational-geometry-in-c/"]]},
+{id:"quickhull",title:"Quickhull",level:4,kind:"Convex hull",status:"Runnable teaching lab",
+ summary:"Recursively pick the point farthest from the current hull edge and split the remaining points. Average O(n log n), worst case O(n²) but rarely hit.",
+ mental:"Divide by the farthest point",
+ mentalText:"Find the leftmost and rightmost points. The farthest point above the line is on the hull. Recurse on the two triangles.",
+ steps:["Find min and max x.","The line between them splits the points.","Find the farthest point from the line.","Recurse on points on the same side.","Combine."],
+ pseudo:"quickhull(points):\n  if len(points) <= 2: return points\n  a = leftmost(points)\n  b = rightmost(points)\n  return [a] + quickhull(points on one side of a,b) + [b] + quickhull(points on other side)\n\nquickhull_side(a, b, points):\n  if not points: return []\n  c = farthest point from line ab\n  left = points left of ac\n  right = points left of cb\n  return quickhull_side(a, c, left) + [c] + quickhull_side(c, b, right)\n\nAverage time: O(n log n)\nWorst case: O(n^2) when points are adversarial",
+ uses:"Convex hull with good practical performance. Easier to parallelize than Graham scan.",
+ strength:"Practical O(n log n) average.",
+ limits:"Worst case quadratic.",
+ pitfall:"Same as quicksort: the pivot choice matters. Degenerate cases on circles are the worst.",
+ question:"What is the worst-case input for Quickhull?",
+ answer:"Points arranged so that each split is very unbalanced, e.g., points on a parabola. Gives O(n²).",
+ demo:"quickhull",sample:"0 3\n1 1\n2 2\n4 4\n0 0\n1 2\n3 1\n3 3",refs:[
+  ["Barber, Dobkin, Huhdanpaa, The Quickhull algorithm for convex hulls, ACM TOMS 1996","https://doi.org/10.1145/235815.235821"],
+  ["Eddy, A new convex hull algorithm for planar sets, ACM TOMS 1977","https://doi.org/10.1145/355759.355766"],
+  ["O'Rourke, Computational Geometry in C, Section 3.7","https://www.cambridge.org/core/books/computational-geometry-in-c/"]]},
+/* Chapter 4 */
+{id:"nearest-pair",title:"Closest pair of points",level:4,kind:"Divide and conquer",status:"Runnable teaching lab",
+ summary:"Find the two closest points in a set. Divide and conquer gives O(n log n). The strip check across the divide is the key step.",
+ mental:"Split, recurse, check the strip",
+ mentalText:"Sort by x. Split into halves. Recurse both sides. Combine by checking points within the current best distance of the split line.",
+ steps:["Sort points by x.","Divide into left and right halves.","Recursively find the min distance in each half.","Take the smaller delta.","Sort points in the strip of width 2*delta by y.","For each point, check the next few points in the strip."],
+ pseudo:"closest_pair(points):\n  points = sorted by x\n  return rec(points)\n\nrec(points):\n  if len(points) <= 3:\n    return brute force min distance\n  mid = len(points) // 2\n  mid_x = points[mid].x\n  d_left = rec(points[:mid])\n  d_right = rec(points[mid:])\n  d = min(d_left, d_right)\n  strip = [p for p in points if abs(p.x - mid_x) < d]\n  strip.sort(key=lambda p: p.y)\n  for i in range(len(strip)):\n    for j in range(i+1, min(i+8, len(strip))):\n      d = min(d, dist(strip[i], strip[j]))\n  return d\n\nTime: O(n log n)",
+ uses:"Collision detection, clustering, computational biology, graphics.",
+ strength:"O(n log n) deterministic. Exact.",
+ limits:"Implementation is subtle. The strip check must not be missed.",
+ pitfall:"Forgetting to sort the strip by y makes the algorithm O(n²) instead of O(n log n).",
+ question:"Why is the strip check at most 7 comparisons per point?",
+ answer:"The packing argument: at most 8 points can fit in a delta x 2*delta rectangle without two being closer than delta.",
+ demo:"closest-pair",sample:"0 0\n5 5\n1 1\n6 6\n3 4\n7 8\n9 2",refs:[
+  ["Shamos and Hoey, Closest-point problems, FOCS 1975","https://doi.org/10.1109/SFCS.1975.8"],
+  ["CLRS, Section 33.4 Finding the closest pair of points","https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/"],
+  ["de Berg et al., Computational Geometry, Chapter 5","https://link.springer.com/book/10.1007/978-3-540-77974-2"]]},
+{id:"kd-trees-geo",title:"k-d trees for geometric queries",level:4,kind:"Spatial index",status:"Runnable teaching lab",
+ summary:"A k-d tree splits space by alternating axes. It supports nearest neighbour, range search and point location in low dimensions.",
+ mental:"Divide space with axis-aligned cuts",
+ mentalText:"At each level, split the points by one axis at the median. Recurse on the two halves.",
+ steps:["Choose the axis (alternating).","Find the median on that axis.","Recurse on left and right.","For queries, prune subtrees whose bounding box is too far."],
+ pseudo:"build(points, depth):\n  if not points: return None\n  axis = depth % k\n  points.sort(by axis)\n  mid = len(points) // 2\n  return Node(\n    point=points[mid],\n    left=build(points[:mid], depth+1),\n    right=build(points[mid+1:], depth+1),\n    axis=axis,\n  )\n\nnearest(root, q):\n  best = None\n  def visit(node):\n    if not node: return\n    if dist(node.point, q) < best.dist: best = node.point\n    axis = node.axis\n    first = node.left if q[axis] < node.point[axis] else node.right\n    second = node.right if q[axis] < node.point[axis] else node.left\n    visit(first)\n    if abs(q[axis] - node.point[axis]) < best.dist:\n      visit(second)\n  visit(root)\n  return best",
+ uses:"Nearest neighbour, range search, ray tracing, point location in low dimensions.",
+ strength:"Works in any dimension. Simple extension of binary search.",
+ limits:"Curse of dimensionality: degrades to linear scan above ~20 dimensions.",
+ pitfall:"Choosing the axis at random or by split-spread gives better balance on skewed data.",
+ question:"At what dimension does a k-d tree stop being useful?",
+ answer:"Around 20. Above that, almost every point must be checked because pruning fails.",
+ demo:"kd-tree-geo",sample:"2 3\n5 4\n9 6\n4 7\n8 1\n7 2\n\n5 5",refs:[
+  ["Bentley, Multidimensional binary search trees used for associative searching, CACM 1975","https://doi.org/10.1145/361002.361007"],
+  ["Friedman, Bentley, Finkel, An algorithm for finding best matches in logarithmic expected time, ACM TOMS 1977","https://doi.org/10.1145/355744.355745"],
+  ["Samet, Foundations of Multidimensional and Metric Data Structures","https://www.sciencedirect.com/book/9780123694461/foundations-of-multidimensional-and-metric-data-structures"]]},
+{id:"range-trees",title:"Range trees and orthogonal range search",level:5,kind:"Spatial index",status:"Concept lesson",
+ summary:"A range tree answers orthogonal range queries in O(log² n + k) time with O(n log n) space. Each level is a balanced BST over one coordinate.",
+ mental:"A tree of trees over coordinates",
+ mentalText:"First tree splits by x. Each node holds a secondary tree over y. Query walks x and consults the y-trees.",
+ steps:["Build a balanced BST on x.","Each node holds a sorted list or BST of the points in its subtree, keyed by y.","For a query rectangle, find O(log n) canonical nodes on x.","In each, find O(log n + k) points on y."],
+ pseudo:"build(points, depth=0):\n  if not points: return None\n  axis = depth % 2\n  sort by axis\n  mid = len(points) // 2\n  node = Node(point=points[mid])\n  node.left = build(points[:mid], depth+1)\n  node.right = build(points[mid+1:], depth+1)\n  node.assoc = sorted list or BST on y of all points in subtree\n  return node\n\nquery(node, rect):\n  if node is None: return\n  if node.point in rect: report node.point\n  if rect intersects left region: query(node.left, rect)\n  if rect intersects right region: query(node.right, rect)\n\nTime: O(log^2 n + k)\nSpace: O(n log n)",
+ uses:"GIS, database indexing, geometric databases, computational statistics.",
+ strength:"Sub-linear orthogonal range queries.",
+ limits:"O(n log n) space. Higher dimensions cost O(log^d n).",
+ pitfall:"The space grows fast with dimension. Fractional cascading reduces the query time to O(log n + k).",
+ question:"What is the query time of a 2D range tree?",
+ answer:"O(log² n + k) where k is the number of reported points.",
+ demo:"none",sample:"",refs:[
+  ["Bentley, Decomposable searching problems, Information Processing Letters 1979","https://doi.org/10.1016/0020-0190(79)90117-0"],
+  ["Lueker, A data structure for orthogonal range queries, FOCS 1978","https://doi.org/10.1109/SFCS.1978.1"],
+  ["de Berg et al., Computational Geometry, Chapter 5","https://link.springer.com/book/10.1007/978-3-540-77974-2"]]},
+{id:"sweep-line",title:"Sweep line paradigm",level:4,kind:"Paradigm",status:"Concept lesson",
+ summary:"Sweep line processes geometric events in sorted order along one axis. It converts many O(n²) problems into O(n log n) by maintaining a status structure.",
+ mental:"Move a vertical line across the plane",
+ mentalText:"At each event, update a data structure that holds the current slice of the objects. Answer queries as the line moves.",
+ steps:["Define events (start, end, crossing, ...).","Sort events by primary coordinate.","Maintain a status structure for the current slice.","Process events in order, updating the structure."],
+ pseudo:"sweep(objects):\n  events = collect_events(objects)\n  events.sort(by primary coordinate)\n  status = empty ordered set\n  for e in events:\n    handle_event(e, status)\n  return results\n\nClassic applications:\n  segment intersection (Bentley-Ottmann): O((n+k) log n)\n  rectangle union area: O(n log n)\n  closest pair: O(n log n)\n  convex hull of points\n  Voronoi diagram (Fortune): O(n log n)\n  computing visibilities\n  map overlay",
+ uses:"Everything that can be solved by sweeping. Fundamental paradigm.",
+ strength:"Converts O(n²) to O(n log n) for many problems.",
+ limits:"Event handling is subtle. Degenerate cases need careful attention.",
+ pitfall:"The choice of sweep direction and event ordering determines the algorithm. Getting them right is half the work.",
+ question:"What is the status structure in a segment intersection sweep?",
+ answer:"The ordered set of segments currently crossing the sweep line, ordered by y at the current x.",
+ demo:"none",sample:"",refs:[
+  ["de Berg et al., Computational Geometry, Chapter 2","https://link.springer.com/book/10.1007/978-3-540-77974-2"],
+  ["Preparata and Shamos, Computational Geometry: An Introduction, Chapter 1","https://link.springer.com/book/10.1007/978-1-4612-1098-6"],
+  ["Nievergelt and Preparata, Plane-sweep algorithms for intersecting geometric figures, CACM 1982","https://doi.org/10.1145/358728.358741"]]},
+/* Chapter 5 */
+{id:"fortune",title:"Fortune's algorithm",level:5,kind:"Voronoi",status:"Concept lesson",
+ summary:"Fortune's algorithm computes the Voronoi diagram in O(n log n) using a sweep line and a parabolic beach line. The beach line is the boundary between fixed sites and unprocessed space.",
+ mental:"Sweep a line and track the beach line of parabolas",
+ mentalText:"The sweep line advances. Processed sites define parabolas that form the beach line. Voronoi edges appear where parabolas meet.",
+ steps:["Sweep line moves top to bottom.","Maintain a balanced tree of parabola arcs on the beach line.","Site events: a new parabola appears, splitting an arc.","Circle events: three parabolas converge, creating a Voronoi vertex.","Edges are traced as the sweep advances."],
+ pseudo:"fortune(sites):\n  events = priority queue of site and circle events\n  for s in sites: push(site_event(s.x, s))\n  beach_line = balanced tree of arcs\n  while events not empty:\n    e = events.pop_min()\n    if e is site_event:\n      handle_site(e, beach_line, events)\n    elif e is circle_event:\n      handle_circle(e, beach_line, events)\n  return voronoi_diagram\n\nTime: O(n log n)\nSpace: O(n)\nHandle degeneracies: coincident sites, cocircular triples.",
+ uses:"Voronoi diagrams, spatial analysis, mesh generation, nearest neighbour queries.",
+ strength:"Optimal O(n log n).",
+ limits:"Complex to implement. Robust predicates essential.",
+ pitfall:"Degenerate cases (three or more cocircular sites) cause multiple circle events at the same point. Must be handled.",
+ question:"What is the beach line in Fortune's algorithm?",
+ answer:"The set of parabolic arcs at the intersection of the current sweep line's influence and the already-processed sites.",
+ demo:"none",sample:"",refs:[
+  ["Fortune, A sweepline algorithm for Voronoi diagrams, Algorithmica 1987","https://doi.org/10.1007/BF01840357"],
+  ["de Berg et al., Computational Geometry, Chapter 7","https://link.springer.com/book/10.1007/978-3-540-77974-2"],
+  ["Okabe et al., Spatial Tessellations: Concepts and Applications of Voronoi Diagrams, Wiley 2000","https://www.wiley.com/en-us/Spatial+Tessellations%3A+Concepts+and+Applications+of+Voronoi+Diagrams%2C+2nd+Edition-p-9780471986355"]]},
+{id:"bowyer-watson",title:"Bowyer-Watson Delaunay triangulation",level:5,kind:"Delaunay",status:"Runnable teaching lab",
+ summary:"Bowyer-Watson builds the Delaunay triangulation incrementally. It inserts points one at a time, removing triangles whose circumcircle contains the new point.",
+ mental:"Insert points, fix the circumcircle violations",
+ mentalText:"Add a new point. Find all triangles whose circumcircle contains it. Remove them. Retriangulate the hole.",
+ steps:["Start with a super-triangle containing all points.","For each point p:","Find triangles whose circumcircle contains p.","Remove them, leaving a star-shaped hole.","Connect p to the boundary of the hole.","Remove triangles touching the super-triangle."],
+ pseudo:"bowyer_watson(points):\n  triangulation = [super_triangle(points)]\n  for p in points:\n    bad = [t for t in triangulation if in_circumcircle(t, p)]\n    polygon = boundary_edges(bad)\n    triangulation = [t for t in triangulation if t not in bad]\n    for edge in polygon:\n      triangulation.append(Triangle(edge.a, edge.b, p))\n  triangulation = [t for t in triangulation if not touches_super(t)]\n  return triangulation\n\nTime: O(n^2) naive\nWith good point location and edge flipping: O(n log n) expected.",
+ uses:"Terrain modeling, mesh generation, interpolation, computer graphics.",
+ strength:"Simple to describe. Good practical performance.",
+ limits:"Naive implementation is O(n²). Needs robust incircle predicate.",
+ pitfall:"The super-triangle must be large enough. Too small breaks the cocircular detection.",
+ question:"What is the Delaunay condition for a triangle?",
+ answer:"No other point lies strictly inside the triangle's circumcircle.",
+ demo:"delaunay",sample:"0 0\n1 0\n0 1\n1 1\n0.5 0.5\n0.3 0.7\n0.7 0.3",refs:[
+  ["Bowyer, Computing Dirichlet tessellations, Computer Journal 1981","https://doi.org/10.1093/comjnl/24.2.162"],
+  ["Watson, Computing the n-dimensional Delaunay tessellation with application to Voronoi polytopes, Computer Journal 1981","https://doi.org/10.1093/comjnl/24.2.167"],
+  ["Shewchuk, Triangle: Engineering a 2D quality mesh generator and Delaunay triangulator, 1996","https://www.cs.cmu.edu/~quake/triangle.html"]]},
+{id:"delaunay",title:"Delaunay triangulation properties",level:5,kind:"Delaunay",status:"Concept lesson",
+ summary:"The Delaunay triangulation maximizes the minimum angle among all triangulations. It is dual to the Voronoi diagram and is unique for points in general position.",
+ mental:"The triangulation that avoids skinny triangles",
+ mentalText:"Among all triangulations of the same points, Delaunay has the 'fattest' triangles. Every triangle's circumcircle contains no other point.",
+ steps:["Compute the Delaunay triangulation.","Recover the Voronoi diagram as the dual.","Use the empty circumcircle property for many algorithms.","Use it for interpolation, mesh generation, terrain."],
+ pseudo:"Properties:\n  - Every triangle's circumcircle contains no other point\n  - Maximizes the minimum angle (avoids skinny triangles)\n  - Dual to the Voronoi diagram\n  - Unique up to cocircular quadruples\n  - Contains the Euclidean MST\n  - Contains the convex hull edges\n\nComplexity:\n  O(n log n) with divide and conquer\n  O(n log n) expected with randomized incremental\n  O(n log log n) with sophisticated methods\n\nDegenerate cases:\n  cocircular points cause multiple valid triangulations\n  use symbolic perturbation to break ties",
+ uses:"Mesh generation, terrain modeling, interpolating data, computing Voronoi diagrams, alpha shapes.",
+ strength:"Optimal triangles, many theoretical properties.",
+ limits:"Requires robust incircle predicate. Degeneracies need care.",
+ pitfall:"Non-unique for cocircular points. Choose a consistent tie-breaking rule.",
+ question:"What makes Delaunay triangles 'nice' for mesh generation?",
+ answer:"They maximize the minimum angle, so no triangle is too skinny. This makes them good elements for finite element methods.",
+ demo:"none",sample:"",refs:[
+  ["Delaunay, Sur la sphere vide, 1934","https://en.wikipedia.org/wiki/Delaunay_triangulation"],
+  ["de Berg et al., Computational Geometry, Chapter 9","https://link.springer.com/book/10.1007/978-3-540-77974-2"],
+  ["Shewchuk, Delaunay refinement algorithms for triangular mesh generation, Computational Geometry 2002","https://doi.org/10.1016/S0925-7721(01)00047-5"]]},
+{id:"lloyd-relaxation",title:"Lloyd relaxation",level:4,kind:"Delaunay",status:"Runnable teaching lab",
+ summary:"Lloyd relaxation iteratively moves each site to the centroid of its Voronoi cell. It produces evenly-spaced points and is used for mesh smoothing and generating blue noise.",
+ mental:"Move each site to the center of its cell, repeat",
+ mentalText:"Compute the Voronoi diagram. For each cell, compute its centroid. Move the site there. Repeat.",
+ steps:["Place initial sites.","Compute Voronoi diagram.","For each cell, compute its centroid.","Move the site to the centroid.","Repeat until convergence."],
+ pseudo:"lloyd(points, iterations):\n  for _ in range(iterations):\n    voronoi = compute_voronoi(points)\n    for i, cell in enumerate(voronoi.cells):\n      points[i] = centroid(cell)\n  return points\n\nConverges to a centroidal Voronoi tessellation (CVT).\nProduces well-spaced points (blue noise).\n",
+ uses:"Mesh generation, texture generation, point distribution, stippling, imaging.",
+ strength:"Simple iterative improvement. Produces visually pleasing results.",
+ limits:"Slow convergence. Each iteration is O(n log n).",
+ pitfall:"Cells at the boundary of the domain must be handled carefully. Clipping the diagram to a bounding region is common.",
+ question:"What is a centroidal Voronoi tessellation?",
+ answer:"A Voronoi diagram where each site coincides with the centroid of its cell. Lloyd relaxation converges to it.",
+ demo:"lloyd",sample:"2 2\n3 5\n5 3\n7 7\n4 4\n6 8\n8 2",refs:[
+  ["Lloyd, Least squares quantization in PCM, IEEE TIT 1982","https://doi.org/10.1109/TIT.1982.1056489"],
+  ["Du, Faber, Gunzburger, Centroidal Voronoi Tessellations: Applications and Algorithms, SIAM Review 1999","https://doi.org/10.1137/S0036144599352836"],
+  ["Ju, Losasso, Schaefer, Warren, Painting with dots, SIGGRAPH 2002","https://doi.org/10.1145/566654.566663"]]},
+/* Chapter 6 */
+{id:"rotating-calipers",title:"Rotating calipers",level:5,kind:"Optimization",status:"Concept lesson",
+ summary:"Rotating calipers traverse the convex hull with two parallel supporting lines. This solves diameter, width, minimum rectangle, and closest pair problems in O(n) after the hull is computed.",
+ mental:"Two parallel rulers rotating around the hull",
+ mentalText:"Place two parallel lines tangent to the hull. Rotate them together. The sequence of hull vertices they touch gives all antipodal pairs.",
+ steps:["Compute the convex hull.","Start with an edge of the hull as a supporting line.","Find the antipodal vertex on the opposite side.","Rotate to the next edge.","Track the antipodal vertex.","Report all antipodal pairs, then compute the metric."],
+ pseudo:"rotating_calipers(hull):\n  n = len(hull)\n  j = 1\n  for i in range(n):\n    while area(hull[i], hull[(i+1)%n], hull[(j+1)%n]) > area(hull[i], hull[(i+1)%n], hull[j]):\n      j = (j + 1) % n\n    report antipodal pair (i, j)\n\nApplications:\n  - diameter: max distance between antipodal pairs\n  - width: minimum of max distance from a line\n  - minimum-area rectangle: side lengths from antipodal pairs\n  - minimum-perimeter rectangle\n  - convex polygon intersection\n\nTime: O(n) after hull.",
+ uses:"Hull analysis, bounding box, shape orientation, robot path planning.",
+ strength:"Linear after the hull. Many metrics from one pass.",
+ limits:"Only on convex polygons.",
+ pitfall:"Degeneracies (parallel edges) need careful handling to avoid missing pairs.",
+ question:"How many antipodal pairs can a convex polygon have?",
+ answer:"At most n pairs for n vertices. The rotating calipers traversal is linear.",
+ demo:"calipers",sample:"0 0\n4 0\n4 3\n2 5\n0 3",refs:[
+  ["Toussaint, Solving geometric problems with the rotating calipers, 1983","https://www.cs.mcgill.ca/~cs507/projects/1998/jacob/paper.pdf"],
+  ["Shamos, Computational Geometry, PhD thesis, Yale 1978","https://en.wikipedia.org/wiki/Rotating_calipers"],
+  ["Preparata and Shamos, Computational Geometry: An Introduction, Section 4","https://link.springer.com/book/10.1007/978-1-4612-1098-6"]]},
+{id:"diameter-minrect",title:"Diameter and minimum enclosing rectangle",level:4,kind:"Application",status:"Runnable teaching lab",
+ summary:"The diameter of a point set is the largest distance between two points. The minimum-area enclosing rectangle can be found via rotating calipers on the hull.",
+ mental:"Widest pair and tightest box",
+ mentalText:"Diameter is the farthest pair. The minimum enclosing rectangle has one side flush with a hull edge.",
+ steps:["Compute the convex hull.","Rotating calipers to find antipodal pairs.","Diameter: max over antipodal pairs.","Minimum rectangle: for each hull edge, project all points onto the edge and its perpendicular.","Take the minimum area over all edges."],
+ pseudo:"diameter(hull):\n  best = 0\n  for each antipodal pair (i, j):\n    best = max(best, dist(hull[i], hull[j]))\n  return best\n\nminimum_rectangle(hull):\n  best_area = infinity\n  for each edge (i, i+1):\n    edge_dir = hull[i+1] - hull[i]\n    perp = (-edge_dir.y, edge_dir.x)\n    min_x, max_x, min_y, max_y = project all points\n    area = (max_x - min_x) * (max_y - min_y)\n    best_area = min(best_area, area)\n  return best_area\n\nTime: O(n^2) naive\nWith rotating calipers: O(n)",
+ uses:"Bounding box, computer vision, image analysis, molecular geometry.",
+ strength:"Exact. Small code.",
+ limits:"O(n²) naive. Use rotating calipers for O(n).",
+ pitfall:"The minimum rectangle has a side flush with a hull edge. Not obvious but true.",
+ question:"Is the minimum-area enclosing rectangle always flush with a hull edge?",
+ answer:"Yes. This is the key theorem that makes the rotating-calipers method work.",
+ demo:"diameter-rect",sample:"0 0\n4 0\n4 3\n2 5\n0 3",refs:[
+  ["Freeman and Shapira, Determining the minimum-area encasing rectangle for an arbitrary closed curve, CACM 1975","https://doi.org/10.1145/360881.360919"],
+  ["Toussaint, Solving geometric problems with the rotating calipers, 1983","https://www.cs.mcgill.ca/~cs507/projects/1998/jacob/paper.pdf"],
+  ["Preparata and Shamos, Computational Geometry: An Introduction","https://link.springer.com/book/10.1007/978-1-4612-1098-6"]]},
+{id:"welzl-circle",title:"Welzl smallest enclosing circle",level:5,kind:"Randomized",status:"Runnable teaching lab",
+ summary:"The smallest enclosing circle of a point set is determined by 2 or 3 points. Welzl's algorithm finds it in expected O(n) with a simple randomized incremental scheme.",
+ mental:"Grow the circle, fix violations with boundary points",
+ mentalText:"Process points one at a time. If a point is outside the circle, it must be on the boundary. Recurse with a smaller set and more boundary constraints.",
+ steps:["Shuffle the points.","Process points one at a time.","Maintain a circle containing all processed points.","If a new point is inside, continue.","If outside, the new point is on the boundary.","Recurse with the new point fixed."],
+ pseudo:"welzl(points, R=[]):\n  if not points or len(R) == 3:\n    return trivial_circle(R)\n  p = points[0]\n  D = welzl(points[1:], R)\n  if p in D: return D\n  return welzl(points[1:], R + [p])\n\nBase cases:\n  R = 0: any circle\n  R = 1: point circle\n  R = 2: circle through two points\n  R = 3: circle through three points\n\nExpected time: O(n)\nWorst case: O(n^3) but rare",
+ uses:"Bounding shapes, computational geometry, clustering (min enclosing circle), facility location.",
+ strength:"Expected O(n). Simple recursion.",
+ limits:"Randomized. Needs a robust 3-point circumcircle.",
+ pitfall:"Recursion is easiest but Python's default depth limit is a problem. Use iterative or increase the limit.",
+ question:"How many points can determine the smallest enclosing circle?",
+ answer:"Two (diameter) or three (circumcircle). Never more.",
+ demo:"welzl",sample:"0 0\n4 0\n4 3\n2 5\n0 3",refs:[
+  ["Welzl, Smallest enclosing disks (balls and ellipsoids), 1991","https://doi.org/10.1007/BFb0038202"],
+  ["de Berg et al., Computational Geometry, Chapter 4","https://link.springer.com/book/10.1007/978-3-540-77974-2"],
+  ["Nayuki, Smallest enclosing circle implementation","https://www.nayuki.io/page/smallest-enclosing-circle"]]},
+{id:"hull-applications",title:"Convex hull applications",level:4,kind:"Applications",status:"Concept lesson",
+ summary:"The convex hull appears everywhere: bounding regions, obstacle avoidance, collision detection, shape analysis, classification, and as a preprocessing step for many algorithms.",
+ mental:"The outermost extent of a point set",
+ mentalText:"The hull contains all points and is the smallest convex set that does. Every point is either on the hull or inside.",
+ steps:["Compute the hull.","Use it as a compact representation.","Use hull properties for further processing.","Combine with rotating calipers or other tools."],
+ pseudo:"Applications:\n  - collision detection (hull simplifies shapes)\n  - robot motion planning\n  - obstacle avoidance\n  - SVM and classification\n  - morphological image processing\n  - bounding region for rendering\n  - shape signature\n  - statistical depth\n  - peeling layers (onion decomposition)\n\nComplexity depends on the algorithm:\n  Graham scan, monotone chain: O(n log n)\n  Jarvis march: O(nh)\n  Quickhull: O(n log n) average\n  3D hull: O(n log n) with chained hull",
+ uses:"Graphics, robotics, GIS, machine learning, pattern recognition.",
+ strength:"Compact convex representation, well-understood structure.",
+ limits:"Only captures the outer shape. Interior structure is lost.",
+ pitfall:"The hull is not the same as a bounding box or bounding circle. Choose the right tool for the task.",
+ question:"How is the convex hull related to SVM?",
+ answer:"For separable data, the support vectors are on the convex hull of their respective classes. The hull of one class is a lower bound for the margin.",
+ demo:"none",sample:"",refs:[
+  ["Preparata and Shamos, Computational Geometry: An Introduction","https://link.springer.com/book/10.1007/978-1-4612-1098-6"],
+  ["O'Rourke, Computational Geometry in C, Chapter 3","https://www.cambridge.org/core/books/computational-geometry-in-c/"],
+  ["Edelsbrunner, Algorithms in Combinatorial Geometry, Springer 1987","https://link.springer.com/book/10.1007/978-3-642-61568-9"]]},
+/* Chapter 7 */
+{id:"half-plane-intersection",title:"Half-plane intersection",level:5,kind:"Region",status:"Concept lesson",
+ summary:"The intersection of half-planes is a convex polygon. Computed in O(n log n) via sort by angle and a deque, or in O(n) if the planes are already sorted.",
+ mental:"Stack constraints and keep the feasible region",
+ mentalText:"Each half-plane says 'stay on this side'. Sort them by angle. Intersect them one at a time, popping when the boundary is empty.",
+ steps:["Convert each half-plane to its bounding line and direction.","Sort by angle.","Intersect with a deque, popping obsolete planes from both ends.","The result is a convex polygon."],
+ pseudo:"half_plane_intersection(halfplanes):\n  halfplanes.sort(by angle)\n  deque = []\n  for hp in halfplanes:\n    while len(deque) >= 2 and not is_left(deque[-1], deque[-2], hp):\n      deque.pop()\n    while len(deque) >= 2 and not is_left(deque[0], deque[1], hp):\n      deque.popleft()\n    deque.append(hp)\n  while len(deque) >= 2 and not is_left(deque[-1], deque[-2], deque[0]):\n    deque.pop()\n  while len(deque) >= 2 and not is_left(deque[0], deque[1], deque[-1]):\n    deque.popleft()\n  return intersection_points(deque)\n\nTime: O(n log n) with sort\nSpace: O(n)\nDetect empty intersection.",
+ uses:"Linear programming in low dimension, Voronoi cells, feasible regions, computational geometry primitives.",
+ strength:"Exact for convex regions. O(n log n).",
+ limits:"Only for half-planes in 2D. Higher dimensions are harder.",
+ pitfall:"Parallel half-planes need careful ordering. Robust orientation is essential.",
+ question:"What is the intersection of half-planes geometrically?",
+ answer:"A convex polygon (possibly unbounded, empty, or a single point).",
+ demo:"none",sample:"",refs:[
+  ["Preparata and Shamos, Computational Geometry: An Introduction","https://link.springer.com/book/10.1007/978-1-4612-1098-6"],
+  ["de Berg et al., Computational Geometry, Chapter 4","https://link.springer.com/book/10.1007/978-3-540-77974-2"],
+  ["cp-algorithms.com, Half-plane intersection","https://cp-algorithms.com/geometry/halfplane-intersection.html"]]},
+{id:"line-arrangements",title:"Line arrangements",level:5,kind:"Structure",status:"Concept lesson",
+ summary:"An arrangement of n lines partitions the plane into O(n²) faces, edges and vertices. It is the fundamental structure for many geometric computations.",
+ mental:"Cut the plane with lines and study the cells",
+ mentalText:"Each line divides the plane. With n lines, you get O(n²) cells. The structure can be built in O(n²) time and used for point location, optimization, etc.",
+ steps:["Identify all lines.","Compute pairwise intersections.","Sort along each line to get the arrangement.","Use the structure for queries."],
+ pseudo:"Arrangement of n lines:\n  vertices: n(n-1)/2 (generically)\n  edges: n^2\n  faces: n(n+1)/2 + 1\n\nTotal complexity: O(n^2)\nConstruction: O(n^2) by iterating over pairs and sorting\n\nApplications:\n  point location\n  ray shooting\n  shortest path amid obstacles\n  line segment intersection\n  k-sets",
+ uses:"Geometric algorithms, optimization, ray shooting, motion planning.",
+ strength:"Exact and complete structure.",
+ limits:"O(n²) complexity is prohibitive for large n.",
+ pitfall:"Degenerate cases (parallel lines, concurrent lines) reduce the number of vertices.",
+ question:"How many cells does an arrangement of n lines in general position have?",
+ answer:"n(n+1)/2 + 1. For n = 3, this is 7.",
+ demo:"none",sample:"",refs:[
+  ["Edelsbrunner, Algorithms in Combinatorial Geometry, Springer 1987","https://link.springer.com/book/10.1007/978-3-642-61568-9"],
+  ["de Berg et al., Computational Geometry, Chapter 8","https://link.springer.com/book/10.1007/978-3-540-77974-2"],
+  ["Agarwal and Sharir, Arrangements and their applications, 1998","https://doi.org/10.1016/S0925-7721(97)00027-3"]]},
+{id:"alpha-shapes",title:"Alpha shapes",level:5,kind:"Shape reconstruction",status:"Concept lesson",
+ summary:"An alpha shape generalizes the convex hull. Each alpha value gives a piece of the shape. Small alpha gives the point set; large alpha gives the hull.",
+ mental:"Carve the shape with a disk of radius 1/alpha",
+ mentalText:"Roll a disk of radius 1/alpha around the point set. Where the disk cannot enter, the shape is solid. As alpha increases, the shape shrinks.",
+ steps:["Compute the Delaunay triangulation.","For each triangle, check whether its circumradius is ≤ 1/alpha.","For each edge, check whether the boundary circles fit.","Keep the triangles and edges that pass.","Result is the alpha shape."],
+ pseudo:"alpha_shape(points, alpha):\n  triangulation = delaunay(points)\n  shape = []\n  for triangle t in triangulation:\n    if circumradius(t) <= 1/alpha:\n      shape.append(t)\n  for edge e in triangulation:\n    if circle_boundary_fits(e, alpha):\n      shape.append(e)\n  return shape\n\nAlpha = 0: point set\nAlpha = infinity: convex hull\nAlpha varies smoothly.\n\nComplexity: O(n log n) given the Delaunay triangulation.",
+ uses:"Shape reconstruction, surface reconstruction, computational topology, point cloud analysis.",
+ strength:"Smoothly connects points to hull. Topologically meaningful.",
+ limits:"Requires alpha tuning. Only for well-sampled data.",
+ pitfall:"Alpha must be chosen carefully. Wrong alpha gives either disconnected points or the full hull.",
+ question:"What does alpha = 0 produce?",
+ answer:"The point set with no triangles. Only the points remain.",
+ demo:"none",sample:"",refs:[
+  ["Edelsbrunner, Kirkpatrick, Seidel, On the shape of a set of points in the plane, IEEE TIT 1983","https://doi.org/10.1109/TIT.1983.1056714"],
+  ["Edelsbrunner and Mücke, Three-dimensional alpha shapes, ACM TOG 1994","https://doi.org/10.1145/174462.156635"],
+  ["CGAL Alpha shapes documentation","https://doc.cgal.org/latest/Alpha_shapes_2/index.html"]]},
+{id:"medial-axis",title:"Medial axis and skeleton",level:5,kind:"Structure",status:"Concept lesson",
+ summary:"The medial axis is the set of points with more than one closest point on the boundary. It captures the shape's skeleton and is used for shape analysis and simplification.",
+ mental:"The backbone of a shape",
+ mentalText:"Imagine a grass fire starting from the boundary of a shape. The medial axis is where the fire fronts meet.",
+ steps:["Compute the Voronoi diagram of the boundary.","The medial axis is the internal Voronoi edges.","Prune short branches for simplification.","Use for shape matching, animation, or simplification."],
+ pseudo:"medial_axis(polygon):\n  sample boundary → points P\n  voronoi = compute_voronoi(P)\n  medial_axis = [edges of voronoi inside the polygon]\n  return medial_axis\n\nProperties:\n  preserves topology\n  encodes the shape's thickness (via distance to boundary)\n  has branches\n\nApplications:\n  shape matching\n  path planning (keep the robot's center on the axis)\n  character animation (skeleton)\n  mesh simplification",
+ uses:"Shape analysis, computer graphics, robotics, medical imaging.",
+ strength:"Captures the essential structure of a shape.",
+ limits:"Sensitive to boundary noise. Pruning needs heuristics.",
+ pitfall:"The medial axis of a polygon with many vertices is complex. Simplify before computing.",
+ question:"What does the medial axis look like for a rectangle?",
+ answer:"A line segment parallel to the long side, plus two branches to the short sides at the ends. It's a 'bone' along the middle.",
+ demo:"none",sample:"",refs:[
+  ["Blum, A transformation for extracting new descriptors of shape, 1967","https://en.wikipedia.org/wiki/Medial_axis"],
+  ["Ogniewicz and Kübler, Hierarchic Voronoi skeletons, Pattern Recognition 1995","https://doi.org/10.1016/0031-3203(94)00115-3"],
+  ["Siddiqi and Pizer, Medial Representations: Mathematics, Algorithms and Applications, Springer 2008","https://link.springer.com/book/10.1007/978-1-4020-8658-8"]]},
+/* Chapter 8 */
+{id:"sat",title:"Separating Axis Theorem (SAT)",level:4,kind:"Collision",status:"Runnable teaching lab",
+ summary:"Two convex shapes do not collide if and only if there is an axis along which their projections do not overlap. For polygons, only the edge normals need testing.",
+ mental:"Find a direction where the shadows don't overlap",
+ mentalText:"Project both shapes onto various axes. If any axis has non-overlapping projections, they are separated.",
+ steps:["Collect candidate axes: edge normals of both polygons.","For each axis, project both polygons onto the axis.","If the projections do not overlap, no collision.","If all axes overlap, collision."],
+ pseudo:"sat(polygon_a, polygon_b):\n  for each edge of A:\n    axis = perpendicular(edge)\n    if not overlap(project(A, axis), project(B, axis)):\n      return False\n  for each edge of B:\n    axis = perpendicular(edge)\n    if not overlap(project(A, axis), project(B, axis)):\n      return False\n  return True\n\n2D: O(n + m) per test\n3D: needs cross products of edge pairs too",
+ uses:"2D and 3D collision detection, game physics, UI hit testing.",
+ strength:"Simple, fast for convex shapes.",
+ limits:"Only works for convex shapes. Concave shapes need decomposition.",
+ pitfall:"Axes must include the edge normals of both polygons. Missing one gives false positives.",
+ question:"How many candidate axes are needed in 2D?",
+ answer:"One per edge of each polygon. For two n-gons, 2n axes.",
+ demo:"sat",sample:"0 0\n2 0\n2 2\n0 2\n\n1.5 0\n3.5 0\n3.5 2\n1.5 2\n\n5 5\n7 5\n7 7\n5 7",refs:[
+  ["Gottschalk, Lin, Manocha, OBBTree: A hierarchical structure for rapid interference detection, SIGGRAPH 1996","https://doi.org/10.1145/237170.237244"],
+  ["Ericson, Real-Time Collision Detection, Chapter 4","https://www.sciencedirect.com/book/9781558607323/real-time-collision-detection"],
+  ["Wikipedia, Hyperplane separation theorem","https://en.wikipedia.org/wiki/Hyperplane_separation_theorem"]]},
+{id:"gjk-epa",title:"GJK and EPA",level:5,kind:"Collision",status:"Concept lesson",
+ summary:"GJK tests if two convex shapes intersect using the Minkowski difference and a simplex of support points. EPA (Expanding Polytope Algorithm) finds the penetration depth.",
+ mental:"Search for the origin inside the Minkowski difference",
+ mentalText:"Two shapes intersect if the origin is inside their Minkowski difference. GJK iteratively builds a simplex that converges toward (or contains) the origin.",
+ steps:["Compute the Minkowski difference's support point in a direction.","Build a simplex (point, segment, triangle, tetrahedron) that moves toward the origin.","If the origin is contained, shapes intersect.","Otherwise, no collision.","EPA: expand the simplex to find the closest face to the origin."],
+ pseudo:"gjk(shape_a, shape_b):\n  direction = arbitrary\n  simplex = []\n  while True:\n    p = support(shape_a, shape_b, direction)\n    if dot(p, direction) < 0: return False  # no collision\n    simplex.append(p)\n    if handle_simplex(simplex, direction): return True\n\nevaluate direction to move toward the origin.\nUpdate simplex (point → segment → triangle → tetrahedron).\n\nEPA:\n  use GJK result as starting simplex\n  expand toward the closest face\n  return penetration depth and direction\n\nComplexity: O(n + m) per iteration, few iterations in practice.",
+ uses:"Physics engines, robotics, game collision, real-time graphics.",
+ strength:"Fast for convex shapes. Works in 2D and 3D.",
+ limits:"Only convex shapes. EPA can be numerically delicate.",
+ pitfall:"GJK termination conditions require care. Infinite loops happen with degenerate inputs.",
+ question:"What does GJK use instead of testing all edges?",
+ answer:"It uses support functions to iteratively narrow down the region containing the origin in the Minkowski difference.",
+ demo:"none",sample:"",refs:[
+  ["Gilbert, Johnson, Keerthi, A fast procedure for computing the distance between complex objects in three-dimensional space, IEEE J. Robotics 1988","https://doi.org/10.1109/56.2083"],
+  ["Bergen, A fast and robust GJK implementation for collision detection of convex objects, JGT 1999","https://doi.org/10.1080/10867651.1999.10487502"],
+  ["Ericson, Real-Time Collision Detection, Chapter 9","https://www.sciencedirect.com/book/9781558607323/real-time-collision-detection"]]},
+{id:"minkowski-ccd",title:"Minkowski sums and continuous collision",level:5,kind:"Motion",status:"Concept lesson",
+ summary:"The Minkowski sum of two shapes is the set of all points that are the sum of one point from each. It simplifies many problems. Continuous collision detection uses swept volumes.",
+ mental:"Add every point of one shape to every point of another",
+ mentalText:"The Minkowski sum of a point and a shape is the translated shape. Of two shapes it is the 'swept' region. Collisions and time-of-impact reduce to this.",
+ steps:["For collision, compute the Minkowski difference: A - B.","Collision iff the origin is in A - B.","For motion, compute the swept volume.","Test the sweep against obstacles."],
+ pseudo:"Minkowski sum A + B = {a + b : a in A, b in B}\nMinkowski difference A - B = {a - b : a in A, b in B}\n\nCollision test:\n  A and B collide iff 0 in (A - B)\n\nContinuous collision (linear motion):\n  A(t) = A0 + t*v\n  find smallest t such that A(t) and B collide\n  equivalent to ray casting from A0 - B toward -v in the Minkowski sum\n\nTime of impact = minimal t with collision",
+ uses:"Robotics, physics simulation, path planning, motion planning.",
+ strength:"Unifies many collision and motion problems.",
+ limits:"Minkowski sums are expensive in general. Only for convex shapes is it simple.",
+ pitfall:"Degenerate shapes and numerical precision need attention.",
+ question:"What is the Minkowski sum of two unit squares centered at the origin?",
+ answer:"A 2x2 square centered at the origin. The sum of every point in one square with every point in the other.",
+ demo:"none",sample:"",refs:[
+  ["O'Rourke, Computational Geometry in C, Chapter 7","https://www.cambridge.org/core/books/computational-geometry-in-c/"],
+  ["Ericson, Real-Time Collision Detection, Section 5.5","https://www.sciencedirect.com/book/9781558607323/real-time-collision-detection"],
+  ["Wikipedia, Minkowski addition","https://en.wikipedia.org/wiki/Minkowski_addition"]]},
+/* Chapter 9 */
+{id:"douglas-peucker",title:"Douglas-Peucker simplification",level:3,kind:"Simplification",status:"Runnable teaching lab",
+ summary:"Simplify a polyline by removing vertices that do not affect the shape significantly. Keep the endpoints, find the farthest vertex, recurse on both halves.",
+ mental:"Keep the corners, drop the straights",
+ mentalText:"Draw a line between the endpoints. The farthest point from that line is kept. Recurse on the two halves.",
+ steps:["Draw a line from the first to the last vertex.","Find the vertex farthest from the line.","If the distance is below the tolerance, drop all interior vertices.","Otherwise keep that vertex and recurse on both halves."],
+ pseudo:"douglas_peucker(points, epsilon):\n  if len(points) < 3: return points\n  keep = []\n  dmax = 0\n  index = 0\n  for i in range(1, len(points) - 1):\n    d = perpendicular_distance(points[i], points[0], points[-1])\n    if d > dmax: dmax = d; index = i\n  if dmax > epsilon:\n    left = douglas_peucker(points[:index+1], epsilon)\n    right = douglas_peucker(points[index:], epsilon)\n    return left[:-1] + right\n  else:\n    return [points[0], points[-1]]\n\nTime: O(n log n) average, O(n^2) worst case\nSpace: O(n) for the recursion",
+ uses:"Map simplification, GPS trace compression, shape simplification, digital cartography.",
+ strength:"Simple and effective. Preserves the shape's character.",
+ limits:"Not optimal (does not minimize the number of vertices).",
+ pitfall:"Epsilon must be tuned. Too large drops important features.",
+ question:"What does the Douglas-Peucker algorithm preserve?",
+ answer:"The key corners of the polyline. Points that are nearly on a straight line are dropped.",
+ demo:"douglas-peucker",sample:"0 0\n1 0.5\n2 0.1\n3 1.2\n4 0.3\n5 0.8\n6 0.1\n7 1.5\n8 0.2\n9 0\n\n0.3",refs:[
+  ["Douglas and Peucker, Algorithms for the reduction of the number of points required to represent a digitized line or its caricature, Cartographica 1973","https://doi.org/10.3138/FM57-6770-U75U-7727"],
+  ["Hershberger and Snoeyink, Speeding up the Douglas-Peucker line-simplification algorithm, 1992","https://doi.org/10.1145/141903.141931"],
+  ["Wikipedia, Ramer-Douglas-Peucker algorithm","https://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm"]]},
+{id:"marching-squares",title:"Marching squares",level:4,kind:"Surface extraction",status:"Runnable teaching lab",
+ summary:"Extract iso-contours from a 2D scalar field. Marching squares processes each cell of a grid, using a lookup table to emit line segments for the contour.",
+ mental:"Draw the level set on a grid cell by cell",
+ mentalText:"Each grid cell has 4 corners with values. Compare to the iso-value. The pattern of above/below determines which edges the contour crosses.",
+ steps:["For each grid cell, form a 4-bit mask from above/below the iso-value.","Look up the contour segments for that mask.","Interpolate along the edges for exact positions.","Connect segments across cells."],
+ pseudo:"marching_squares(grid, iso_value):\n  segments = []\n  for each cell (i, j):\n    mask = (top_left > iso) << 3 |\n           (top_right > iso) << 2 |\n           (bottom_right > iso) << 1 |\n           (bottom_left > iso)\n    if mask == 0 or mask == 15: continue  # all above or all below\n    for edge in contour_table[mask]:\n      p = interpolate(edge, cell, iso_value)\n      segments.append(p)\n  return segments\n\n16 possible masks\nAmbiguous cases (5, 10): choose consistent topology\n3D: 256 masks (marching cubes)",
+ uses:"Isosurface extraction, terrain mapping, fluid simulation, medical imaging.",
+ strength:"Simple. Runs in O(cells).",
+ limits:"Ambiguous cases need careful handling. Grid resolution limits accuracy.",
+ pitfall:"The ambiguous mask 5 and 10 can be resolved two ways. Choose based on the surrounding cells or use a saddle-point value.",
+ question:"How many grid corners are used per cell in marching squares?",
+ answer:"Four. The mask is a 4-bit number (0-15).",
+ demo:"marching",sample:"10",refs:[
+  ["Lorensen and Cline, Marching cubes: A high resolution 3D surface construction algorithm, SIGGRAPH 1987","https://doi.org/10.1145/37401.37422"],
+  ["Maple, Geometric design and space planning using the marching squares and marching cube algorithms, 2003","https://doi.org/10.1109/GMAP.2003.1219675"],
+  ["Wikipedia, Marching squares","https://en.wikipedia.org/wiki/Marching_squares"]]},
+{id:"marching-cubes",title:"Marching cubes and mesh decimation",level:5,kind:"Surface extraction",status:"Concept lesson",
+ summary:"Marching cubes extends marching squares to 3D. It extracts triangle meshes from volumetric data. Mesh decimation reduces the number of triangles while preserving shape.",
+ mental:"3D isosurface from voxel data",
+ mentalText:"For each cube of 8 voxels, look up which triangle configuration matches the inside/outside pattern. Emit triangles. Then simplify.",
+ steps:["For each voxel cube, compute the inside/outside mask.","Look up the triangle configuration.","Interpolate vertex positions.","Combine triangles from adjacent cubes.","Optionally decimate the mesh."],
+ pseudo:"marching_cubes(volume, iso_value):\n  triangles = []\n  for each cube in volume:\n    mask = 0\n    for k in range(8):\n      if volume[cube.corner[k]] > iso_value: mask |= (1 << k)\n    if mask == 0 or mask == 255: continue\n    for tri in tri_table[mask]:\n      vertices = [interpolate(edge, cube, iso)\n                  for edge in tri]\n      triangles.append(vertices)\n  return triangles\n\n256 possible masks\n15 base configurations\nProduces 0 to 5 triangles per cube",
+ uses:"Medical imaging (CT, MRI), terrain, fluid simulation, scientific visualization.",
+ strength:"Standard algorithm. Handles complex surfaces.",
+ limits:"Ambiguous cases. Memory for large volumes.",
+ pitfall:"Vertex deduplication is important. Without it, adjacent triangles do not share vertices, giving a fragmented mesh.",
+ question:"How many triangle configurations does marching cubes have?",
+ answer:"15 base configurations with symmetry. 256 raw masks.",
+ demo:"none",sample:"",refs:[
+  ["Lorensen and Cline, Marching cubes, SIGGRAPH 1987","https://doi.org/10.1145/37401.37422"],
+  ["Chernyaev, Marching cubes 33: Construction of topologically correct isosurfaces, 1995","http://www.mcc.uiuc.edu/papers/1995/mc33.pdf"],
+  ["Schroeder, Zarge, Lorensen, Decimation of triangle meshes, SIGGRAPH 1992","https://doi.org/10.1145/133994.134010"]]},
+/* Chapter 10 */
+{id:"ransac",title:"RANSAC",level:4,kind:"Fitting",status:"Runnable teaching lab",
+ summary:"RANSAC fits a model to data with outliers by randomly sampling minimal subsets, fitting a model, and counting inliers. Iterate to find the model with the most support.",
+ mental:"Random guesses, keep the one with the most agreement",
+ mentalText:"Pick the minimum number of points to define a model. Fit. Count inliers within a tolerance. Repeat. Keep the best.",
+ steps:["Choose a minimal subset size.","Sample a minimal subset at random.","Fit the model.","Count inliers within a tolerance.","Keep the best model.","Iterate for a fixed number of rounds."],
+ pseudo:"ransac(data, model, n, k, t, d):\n  best_model = None\n  best_inliers = 0\n  for iteration in range(k):\n    sample = random sample of n points\n    model = fit(sample)\n    inliers = [p for p in data if distance(p, model) < t]\n    if len(inliers) > best_inliers:\n      best_inliers = len(inliers)\n      best_model = model\n  # refit on all inliers\n  best_model = fit(best_inliers)\n  return best_model, best_inliers\n\nIterations k = log(1 - p) / log(1 - w^n)\np = desired success probability\nw = inlier ratio\nn = minimal sample size\n\nFor w = 0.5, n = 2, p = 0.99: k ~ 16",
+ uses:"Line and circle fitting with outliers, homography estimation, fundamental matrix, plane detection.",
+ strength:"Handles large outlier ratios. Simple.",
+ limits:"Non-deterministic. Needs enough iterations.",
+ pitfall:"The threshold t is critical. Too small misses inliers, too large accepts outliers.",
+ question:"How many iterations are needed for 50% inliers and 2-point models with 99% success?",
+ answer:"k = log(0.01) / log(1 - 0.25) ≈ 16 iterations.",
+ demo:"ransac",sample:"0 0\n1 0.9\n2 2.1\n3 3.2\n4 3.8\n5 5.1\n10 10\n15 0.1\n0.5 5\n\n0.5",refs:[
+  ["Fischler and Bolles, Random sample consensus: a paradigm for model fitting with applications to image analysis and automated cartography, CACM 1981","https://doi.org/10.1145/358669.358692"],
+  ["Hartley and Zisserman, Multiple View Geometry in Computer Vision, Cambridge 2004","https://www.cambridge.org/core/books/multiple-view-geometry-in-computer-vision/"],
+  ["Wikipedia, Random sample consensus","https://en.wikipedia.org/wiki/Random_sample_consensus"]]},
+{id:"icp-homography",title:"ICP and homography estimation",level:5,kind:"Registration",status:"Concept lesson",
+ summary:"ICP aligns two point clouds by alternating between finding nearest correspondences and computing the best rigid transform. Homography estimation aligns two images under a planar transform.",
+ mental:"Match points, compute transform, repeat",
+ mentalText:"Given two point sets, iterate: for each point in A, find the nearest in B. Compute the transform. Move A. Repeat until convergence.",
+ steps:["Initialize with a rough alignment.","For each source point, find the nearest target point.","Compute the transform minimizing squared distances.","Apply the transform.","Repeat until convergence."],
+ pseudo:"icp(source, target, max_iter):\n  T = identity\n  for _ in range(max_iter):\n    # find correspondences\n    pairs = []\n    for p in source:\n      q = nearest_neighbor(T @ p, target)\n      pairs.append((p, q))\n    # compute rigid transform (Procrustes / SVD)\n    T = compute_rigid(pairs)\n  return T\n\nHomography:\n  given 4+ point correspondences\n  solve for 3x3 matrix H (up to scale)\n  use DLT with SVD\n  RANSAC for robust estimation\n\nApplications:\n  point cloud registration\n  stereo vision\n  image stitching\n  SLAM",
+ uses:"Robotics, 3D reconstruction, image stitching, augmented reality.",
+ strength:"Simple and effective when initialization is good.",
+ limits:"Local optimum. Needs decent initialization. Nearest neighbour is sensitive to outliers.",
+ pitfall:"ICP can get stuck in local minima. Global registration methods (RANSAC + features) are needed for large misalignments.",
+ question:"What is the main limitation of ICP?",
+ answer:"It converges to the nearest local minimum. If the initial alignment is too far off, it converges to the wrong transform.",
+ demo:"none",sample:"",refs:[
+  ["Besl and McKay, A method for registration of 3-D shapes, IEEE TPAMI 1992","https://doi.org/10.1109/34.121791"],
+  ["Zhang, Iterative point matching for registration of free-form curves and surfaces, IJCV 1994","https://doi.org/10.1007/BF01427149"],
+  ["Hartley and Zisserman, Multiple View Geometry in Computer Vision, Chapter 4","https://www.cambridge.org/core/books/multiple-view-geometry-in-computer-vision/"]]},
+{id:"dstar-lite",title:"D* Lite and dynamic replanning",level:5,kind:"Pathfinding",status:"Concept lesson",
+ summary:"D* Lite is a fast replanning algorithm for robots in changing environments. It computes a shortest path, then repairs it when edge costs change without recomputing from scratch.",
+ mental:"Repair the path when the map changes",
+ mentalText:"Maintain a priority queue of inconsistent nodes. When an edge cost changes, update its endpoints and propagate the change. The path is repaired locally.",
+ steps:["Initialize with the initial map and goal.","Compute the shortest path to the goal (like A* backwards).","Move along the path.","When the map changes, update edge costs.","Repair the affected nodes.","Continue."],
+ pseudo:"d_star_lite(start, goal):\n  g = {goal: 0}\n  rhs = {goal: 0}\n  open = priority queue\n  while True:\n    if start's g == rhs and start not in open:\n      # optimal\n      break\n    k_old = open.top_key()\n    u = open.pop()\n    # ... update g and rhs based on neighbors\n    # ... propagate changes\n  # move along gradient descent\n  # when map changes, update edge costs and re-insert affected nodes\n\nFaster than replanning from scratch after every change.",
+ uses:"Robot navigation, game AI, dynamic path planning, vehicle routing.",
+ strength:"Efficient when the map changes slowly.",
+ limits:"Complex implementation. Priority queue keys must be maintained carefully.",
+ pitfall:"The key computation must be consistent across update and pop. Bugs lead to suboptimal or failed replanning.",
+ question:"Why is D* Lite faster than recomputing A* after every change?",
+ answer:"It reuses information from the previous plan. Only the affected parts of the path are recomputed.",
+ demo:"none",sample:"",refs:[
+  ["Koenig and Likhachev, D* Lite, AAAI 2002","https://www.aaai.org/Papers/AAAI/2002/AAAI02-072.pdf"],
+  ["Stentz, Optimal and efficient path planning for partially-known environments, ICRA 1994","https://doi.org/10.1109/ROBOT.1994.351061"],
+  ["Choset et al., Principles of Robot Motion, MIT Press 2005","https://mitpress.mit.edu/9780262033275/principles-of-robot-motion/"]]},
+{id:"jps-theta",title:"Jump Point Search and Theta*",level:5,kind:"Pathfinding",status:"Runnable teaching lab",
+ summary:"Jump Point Search (JPS) speeds up A* on uniform grids by jumping over symmetric paths. Theta* relaxes the grid constraint and allows any-angle paths.",
+ mental:"Skip symmetric paths and cut corners",
+ mentalText:"On a grid, many paths are equivalent. JPS skips them by jumping from one forced neighbor to the next. Theta* allows diagonal shortcuts.",
+ steps:["JPS: from a node, prune symmetric successors.","Jump in each direction until a forced neighbor or goal is found.","Recurse using jump points as successors.","Theta*: allow any-angle moves.","Update a node's parent to a grandparent if the straight line is clear."],
+ pseudo:"JPS:\n  for each direction:\n    jump recursively:\n      if goal: return\n      if forced neighbor exists: return current\n      continue jumping\n\nTheta*:\n  relax neighbors\n  for each neighbor s of current node s':\n    if line_of_sight(parent(s'), s):\n      if g(parent(s')) + dist(parent(s'), s) < g(s):\n        parent(s) = parent(s')\n        update g(s)\n    else:\n      standard A* relaxation\n\nJPS: up to 30x faster on uniform-cost grids\nTheta*: shorter paths on grids by allowing any-angle moves",
+ uses:"Game AI, robot navigation, RTS games, logistics.",
+ strength:"JPS is very fast on uniform grids. Theta* produces near-optimal any-angle paths.",
+ limits:"JPS assumes uniform cost. Theta* needs line-of-sight tests.",
+ pitfall:"Both require careful successor rules. Bugs give suboptimal paths.",
+ question:"What is a forced neighbor in JPS?",
+ answer:"A neighbor that cannot be reached from the parent by any other path. Forced neighbors define jump points.",
+ demo:"jps",sample:"15 15\n0 0\n14 14\n3 0 3 10\n5 5 10 5",refs:[
+  ["Harabor and Grastien, Online graph pruning for pathfinding on grid maps, AAAI 2011","https://www.aaai.org/ocs/index.php/AAAI/AAAI11/paper/view/3767"],
+  ["Nash, Daniel, Koenig, Felner, Theta*: Any-angle path planning on grids, AAAI 2007","https://www.aaai.org/Papers/AAAI/2007/AAAI07-083.pdf"],
+  ["Rabbit, JPS+ implementation notes","https://www.gdcvault.com/play/1022094/JPS-Over-100x-Faster-than"]]}
+];
+
+const LESSONS=RAW.map(mk);
+const byId=Object.fromEntries(LESSONS.map(x=>[x.id,x]));
+
+/* ============================================================
+   Code examples
+   ============================================================ */
+const CODE={
+ "points":{python:`from math import sqrt\n\n\ndef sub(a, b): return (a[0]-b[0], a[1]-b[1])\ndef add(a, b): return (a[0]+b[0], a[1]+b[1])\ndef scale(a, k): return (a[0]*k, a[1]*k)\ndef dot(a, b): return a[0]*b[0] + a[1]*b[1]\ndef cross(a, b): return a[0]*b[1] - a[1]*b[0]\ndef norm(a): return sqrt(dot(a, a))\n\n\np = (1, 2)\nq = (4, 5)\nv = sub(q, p)          # vector from p to q\nprint("vector:", v)\nprint("norm:", norm(v))\nprint("dot:", dot(v, (1, 0)))\nprint("cross:", cross(v, (1, 1)))\n`},
+ "orientation":{python:`def orient(a, b, c):\n    return (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])\n\n\ndef classify(a, b, c):\n    v = orient(a, b, c)\n    if v > 0: return "counterclockwise"\n    if v < 0: return "clockwise"\n    return "collinear"\n\n\ntests = [\n    ((0,0), (1,0), (1,1)),\n    ((0,0), (1,0), (1,-1)),\n    ((0,0), (1,1), (2,2)),\n]\nfor a, b, c in tests:\n    print(a, b, c, "->", classify(a, b, c))\n`},
+ "distances":{python:`from math import sqrt\n\n\ndef dist_point_point(a, b):\n    return sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2)\n\n\ndef dist_point_segment(p, a, b):\n    ab = (b[0]-a[0], b[1]-a[1])\n    ap = (p[0]-a[0], p[1]-a[1])\n    denom = ab[0]*ab[0] + ab[1]*ab[1]\n    if denom == 0: return dist_point_point(p, a)\n    t = (ap[0]*ab[0] + ap[1]*ab[1]) / denom\n    t = max(0, min(1, t))\n    closest = (a[0] + t*ab[0], a[1] + t*ab[1])\n    return dist_point_point(p, closest)\n\n\nprint(dist_point_segment((2, 3), (0, 0), (4, 0)))\n`},
+ "segments":{python:`def orient(a, b, c):\n    return (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])\n\n\ndef on_segment(a, b, p):\n    return (min(a[0], b[0]) <= p[0] <= max(a[0], b[0]) and\n            min(a[1], b[1]) <= p[1] <= max(a[1], b[1]))\n\n\ndef segments_intersect(a, b, c, d):\n    o1 = orient(a, b, c)\n    o2 = orient(a, b, d)\n    o3 = orient(c, d, a)\n    o4 = orient(c, d, b)\n    if o1 != o2 and o3 != o4:\n        return True\n    if o1 == 0 and on_segment(a, b, c): return True\n    if o2 == 0 and on_segment(a, b, d): return True\n    if o3 == 0 and on_segment(c, d, a): return True\n    if o4 == 0 and on_segment(c, d, b): return True\n    return False\n\n\nprint(segments_intersect((0,0),(1,1),(0,1),(1,0)))\nprint(segments_intersect((0,0),(1,1),(2,2),(3,3)))\n`},
+ "point-in-poly":{python:`def orient(a, b, c):\n    return (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])\n\n\ndef point_in_polygon(poly, p):\n    n = len(poly)\n    inside = False\n    for i in range(n):\n        a = poly[i]\n        b = poly[(i+1) % n]\n        if (a[1] > p[1]) != (b[1] > p[1]):\n            x_int = a[0] + (p[1] - a[1]) / (b[1] - a[1]) * (b[0] - a[0])\n            if p[0] < x_int:\n                inside = not inside\n    return inside\n\n\nsquare = [(0,0), (5,0), (5,5), (0,5)]\nprint(point_in_polygon(square, (2, 2)))\nprint(point_in_polygon(square, (6, 6)))\n`},
+ "graham":{python:`def orient(a, b, c):\n    return (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])\n\n\ndef graham_scan(points):\n    points = sorted(set(points), key=lambda p: (p[1], p[0]))\n    pivot = points[0]\n    def angle(p):\n        return (p[0]-pivot[0], p[1]-pivot[1])\n    # sort by angle (using atan2 for simplicity; production should use cross)\n    import math\n    rest = sorted(points[1:], key=lambda p: math.atan2(p[1]-pivot[1], p[0]-pivot[0]))\n    sorted_pts = [pivot] + rest\n    stack = [sorted_pts[0], sorted_pts[1]]\n    for p in sorted_pts[2:]:\n        while len(stack) >= 2 and orient(stack[-2], stack[-1], p) <= 0:\n            stack.pop()\n        stack.append(p)\n    return stack\n\n\npts = [(0,3),(1,1),(2,2),(4,4),(0,0),(1,2),(3,1),(3,3)]\nprint(graham_scan(pts))\n`},
+ "monotone":{python:`def cross(o, a, b):\n    return (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0])\n\n\ndef monotone_chain(points):\n    points = sorted(set(points))\n    if len(points) <= 1:\n        return points\n    lower = []\n    for p in points:\n        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:\n            lower.pop()\n        lower.append(p)\n    upper = []\n    for p in reversed(points):\n        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:\n            upper.pop()\n        upper.append(p)\n    return lower[:-1] + upper[:-1]\n\n\npts = [(0,3),(1,1),(2,2),(4,4),(0,0),(1,2),(3,1),(3,3)]\nprint(monotone_chain(pts))\n`},
+ "jarvis":{python:`def cross(o, a, b):\n    return (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0])\n\n\ndef jarvis(points):\n    if len(points) < 3: return points\n    start = min(points, key=lambda p: (p[0], p[1]))\n    hull = [start]\n    cur = start\n    while True:\n        nxt = points[0] if points[0] != cur else points[1]\n        for p in points:\n            if p == cur: continue\n            if cross(cur, nxt, p) < 0:\n                nxt = p\n        if nxt == start: break\n        hull.append(nxt)\n        cur = nxt\n    return hull\n\n\npts = [(0,3),(1,1),(2,2),(4,4),(0,0),(1,2),(3,1),(3,3)]\nprint(jarvis(pts))\n`},
+ "quickhull":{python:`def cross(o, a, b):\n    return (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0])\n\n\ndef dist_line(p, a, b):\n    return abs(cross(a, b, p))\n\n\ndef quickhull(points):\n    if len(points) <= 2: return points\n    points = sorted(set(points))\n    a, b = points[0], points[-1]\n    left = [p for p in points if cross(a, b, p) > 0]\n    right = [p for p in points if cross(a, b, p) < 0]\n    return [a] + hull_side(a, b, left) + [b] + hull_side(b, a, right)\n\n\ndef hull_side(a, b, pts):\n    if not pts: return []\n    c = max(pts, key=lambda p: dist_line(p, a, b))\n    left = [p for p in pts if cross(a, c, p) > 0]\n    right = [p for p in pts if cross(c, b, p) > 0]\n    return hull_side(a, c, left) + [c] + hull_side(c, b, right)\n\n\npts = [(0,3),(1,1),(2,2),(4,4),(0,0),(1,2),(3,1),(3,3)]\nprint(quickhull(pts))\n`},
+ "closest-pair":{python:`import math\n\n\ndef closest_pair(points):\n    points = sorted(points)\n    def rec(pts):\n        n = len(pts)\n        if n <= 3:\n            best = float('inf')\n            for i in range(n):\n                for j in range(i+1, n):\n                    best = min(best, math.dist(pts[i], pts[j]))\n            return best\n        mid = n // 2\n        mid_x = pts[mid][0]\n        d = min(rec(pts[:mid]), rec(pts[mid:]))\n        strip = [p for p in pts if abs(p[0]-mid_x) < d]\n        strip.sort(key=lambda p: p[1])\n        for i in range(len(strip)):\n            for j in range(i+1, min(i+8, len(strip))):\n                d = min(d, math.dist(strip[i], strip[j]))\n        return d\n    return rec(points)\n\n\nprint(closest_pair([(0,0),(5,5),(1,1),(6,6),(3,4),(7,8),(9,2)]))\n`},
+ "kd-tree-geo":{python:`import math\n\n\ndef build_kdtree(points, depth=0):\n    if not points: return None\n    k = len(points[0])\n    axis = depth % k\n    points = sorted(points, key=lambda p: p[axis])\n    mid = len(points) // 2\n    return {\n        'point': points[mid],\n        'axis': axis,\n        'left': build_kdtree(points[:mid], depth+1),\n        'right': build_kdtree(points[mid+1:], depth+1),\n    }\n\n\ndef nearest(node, query, best=None):\n    if node is None: return best\n    p = node['point']\n    d = math.dist(p, query)\n    if best is None or d < best[0]:\n        best = (d, p)\n    axis = node['axis']\n    first = node['left'] if query[axis] < p[axis] else node['right']\n    second = node['right'] if query[axis] < p[axis] else node['left']\n    best = nearest(first, query, best)\n    if abs(query[axis] - p[axis]) < best[0]:\n        best = nearest(second, query, best)\n    return best\n\n\npts = [(2,3),(5,4),(9,6),(4,7),(8,1),(7,2)]\ntree = build_kdtree(pts)\nprint(nearest(tree, (5,5)))\n`},
+ "delaunay":{python:`# Bowyer-Watson is long; see scipy.spatial.Delaunay for production use\n\n# This sketch shows the algorithm structure\n\ndef bowyer_watson(points):\n    # 1. Start with a super-triangle\n    # 2. Insert points one at a time\n    # 3. Find triangles whose circumcircle contains the new point\n    # 4. Remove them and retriangulate\n    # 5. Remove triangles touching the super-triangle\n    return []\n\n# In practice, use scipy:\ntry:\n    from scipy.spatial import Delaunay\n    import numpy as np\n    pts = np.array([[0,0],[1,0],[0,1],[1,1],[0.5,0.5]])\n    tri = Delaunay(pts)\n    print("Simplices:", tri.simplices)\nexcept ImportError:\n    print("Install scipy for a production Delaunay implementation.")\n`},
+ "lloyd":{python:`def centroid(points):\n    n = len(points)\n    return (sum(p[0] for p in points)/n, sum(p[1] for p in points)/n)\n\n\ndef lloyd(points, cells, iterations):\n    for _ in range(iterations):\n        points = [centroid(cell) for cell in cells]\n        # recompute cells from the updated points\n        # (would use Voronoi here)\n    return points\n\n# Production uses scipy.spatial.Voronoi\npts = [(2,2),(3,5),(5,3),(7,7),(4,4),(6,8),(8,2)]\nprint("initial:", pts)\n`},
+ "calipers":{python:`import math\n\n\ndef hull(pts):\n    pts = sorted(set(pts))\n    def cross(o, a, b):\n        return (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0])\n    lower = []\n    for p in pts:\n        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:\n            lower.pop()\n        lower.append(p)\n    upper = []\n    for p in reversed(pts):\n        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:\n            upper.pop()\n        upper.append(p)\n    return lower[:-1] + upper[:-1]\n\n\ndef diameter(pts):\n    h = hull(pts)\n    n = len(h)\n    best = 0\n    for i in range(n):\n        for j in range(i+1, n):\n            d = math.dist(h[i], h[j])\n            best = max(best, d)\n    return best\n\n\nprint(diameter([(0,0),(4,0),(4,3),(2,5),(0,3)]))\n`},
+ "diameter-rect":{python:`import math\n\n\ndef min_rect(pts):\n    h = hull(pts)\n    n = len(h)\n    best = float('inf')\n    for i in range(n):\n        a, b = h[i], h[(i+1) % n]\n        dx, dy = b[0]-a[0], b[1]-a[1]\n        L = math.hypot(dx, dy)\n        ux, uy = dx/L, dy/L\n        px, py = -uy, ux\n        us = [p[0]*ux + p[1]*uy for p in h]\n        vs = [p[0]*px + p[1]*py for p in h]\n        area = (max(us)-min(us)) * (max(vs)-min(vs))\n        best = min(best, area)\n    return best\n\n\ndef hull(pts):\n    pts = sorted(set(pts))\n    def cross(o, a, b):\n        return (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0])\n    lower = []\n    for p in pts:\n        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0: lower.pop()\n        lower.append(p)\n    upper = []\n    for p in reversed(pts):\n        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0: upper.pop()\n        upper.append(p)\n    return lower[:-1] + upper[:-1]\n\n\nprint(min_rect([(0,0),(4,0),(4,3),(2,5),(0,3)]))\n`},
+ "welzl":{python:`import math, random\n\n\ndef welzl(points):\n    random.shuffle(points)\n    def circle_2(a, b):\n        cx = (a[0]+b[0])/2\n        cy = (a[1]+b[1])/2\n        r = math.dist(a, b) / 2\n        return (cx, cy, r)\n    def circle_3(a, b, c):\n        ax, ay = a; bx, by = b; cx, cy = c\n        d = 2*(ax*(by-cy) + bx*(cy-ay) + cx*(ay-by))\n        if abs(d) < 1e-12: return circle_2(a, b)\n        ux = ((ax*ax+ay*ay)*(by-cy) + (bx*bx+by*by)*(cy-ay) + (cx*cx+cy*cy)*(ay-by)) / d\n        uy = ((ax*ax+ay*ay)*(cx-bx) + (bx*bx+by*by)*(ax-cx) + (cx*cx+cy*cy)*(bx-ax)) / d\n        r = math.hypot(ax-ux, ay-uy)\n        return (ux, uy, r)\n    def inside(c, p):\n        return math.hypot(p[0]-c[0], p[1]-c[1]) <= c[2] + 1e-9\n    def rec(pts, R):\n        if not pts or len(R) == 3:\n            if len(R) == 0: return (0, 0, 0)\n            if len(R) == 1: return (R[0][0], R[0][1], 0)\n            if len(R) == 2: return circle_2(*R)\n            return circle_3(*R)\n        p = pts[0]\n        D = rec(pts[1:], R)\n        if inside(D, p): return D\n        return rec(pts[1:], R + [p])\n    return rec(points, [])\n\n\nprint(welzl([(0,0),(4,0),(4,3),(2,5),(0,3)]))\n`},
+ "sat":{python:`def project(poly, axis):\n    ds = [p[0]*axis[0] + p[1]*axis[1] for p in poly]\n    return min(ds), max(ds)\n\n\ndef sat(a, b):\n    def axes(p):\n        out = []\n        for i in range(len(p)):\n            x1, y1 = p[i]\n            x2, y2 = p[(i+1) % len(p)]\n            out.append((-（y2-y1), x2-x1))\n        return out\n    for axis in axes(a) + axes(b):\n        min_a, max_a = project(a, axis)\n        min_b, max_b = project(b, axis)\n        if max_a < min_b or max_b < min_a:\n            return False\n    return True\n\n\na = [(0,0),(2,0),(2,2),(0,2)]\nb = [(1.5,0),(3.5,0),(3.5,2),(1.5,2)]\nc = [(5,5),(7,5),(7,7),(5,7)]\nprint("a vs b:", sat(a, b))\nprint("a vs c:", sat(a, c))\n`},
+ "douglas-peucker":{python:`import math\n\n\ndef perp_dist(p, a, b):\n    if a == b:\n        return math.dist(p, a)\n    t = ((p[0]-a[0])*(b[0]-a[0]) + (p[1]-a[1])*(b[1]-a[1])) / (math.dist(a, b)**2)\n    t = max(0, min(1, t))\n    proj = (a[0] + t*(b[0]-a[0]), a[1] + t*(b[1]-a[1]))\n    return math.dist(p, proj)\n\n\ndef dp(points, eps):\n    if len(points) < 3: return points\n    dmax, idx = 0, 0\n    for i in range(1, len(points)-1):\n        d = perp_dist(points[i], points[0], points[-1])\n        if d > dmax: dmax, idx = d, i\n    if dmax > eps:\n        left = dp(points[:idx+1], eps)\n        right = dp(points[idx:], eps)\n        return left[:-1] + right\n    return [points[0], points[-1]]\n\n\npts = [(0,0),(1,0.5),(2,0.1),(3,1.2),(4,0.3),(5,0.8),(6,0.1),(7,1.5),(8,0.2),(9,0)]\nprint(dp(pts, 0.3))\n`},
+ "marching":{python:`def interpolate(v1, v2, iso):\n    if abs(v2 - v1) < 1e-12: return 0.5\n    return (iso - v1) / (v2 - v1)\n\n\ndef marching_squares(grid, iso):\n    segments = []\n    rows, cols = len(grid), len(grid[0])\n    for i in range(rows-1):\n        for j in range(cols-1):\n            tl = grid[i][j] > iso\n            tr = grid[i][j+1] > iso\n            br = grid[i+1][j+1] > iso\n            bl = grid[i+1][j] > iso\n            mask = (tl<<3) | (tr<<2) | (br<<1) | bl\n            # skip all-inside or all-outside\n            if mask == 0 or mask == 15:\n                continue\n            # ... emit segments based on mask\n    return segments\n\n\ngrid = [[0.2*i + 0.3*j for j in range(5)] for i in range(5)]\nprint(marching_squares(grid, 1.5))\n`},
+ "ransac":{python:`import random\n\n\ndef fit_line(p1, p2):\n    x1, y1 = p1; x2, y2 = p2\n    a = y2 - y1\n    b = x1 - x2\n    c = -(a*x1 + b*y1)\n    return a, b, c\n\n\ndef dist_to_line(p, line):\n    a, b, c = line\n    return abs(a*p[0] + b*p[1] + c) / (a*a + b*b)**0.5\n\n\ndef ransac(points, n, k, t):\n    best_model, best_inliers = None, []\n    for _ in range(k):\n        sample = random.sample(points, n)\n        model = fit_line(*sample)\n        inliers = [p for p in points if dist_to_line(p, model) < t]\n        if len(inliers) > len(best_inliers):\n            best_inliers = inliers\n            best_model = model\n    return best_model, best_inliers\n\n\npts = [(0,0),(1,0.9),(2,2.1),(3,3.2),(4,3.8),(5,5.1),(10,10),(15,0.1)]\nmodel, inliers = ransac(pts, 2, 50, 0.5)\nprint("model:", model, "inliers:", len(inliers))\n`},
+ "jps":{python:`# Simplified JPS-style pathfinding on a grid\nfrom collections import deque\n\n\ndef bfs_grid(grid, start, goal):\n    R, C = len(grid), len(grid[0])\n    q = deque([(start, [start])])\n    seen = {start}\n    while q:\n        (r, c), path = q.popleft()\n        if (r, c) == goal:\n            return path\n        for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:\n            nr, nc = r+dr, c+dc\n            if 0 <= nr < R and 0 <= nc < C and grid[nr][nc] == 0 and (nr, nc) not in seen:\n                seen.add((nr, nc))\n                q.append(((nr, nc), path + [(nr, nc)]))\n    return None\n\n\ngrid = [[0]*15 for _ in range(15)]\nfor i in range(3, 11):\n    grid[5][i] = 1\npath = bfs_grid(grid, (0,0), (14,14))\nprint("path length:", len(path) if path else 0)\n`},
+};
+
+/* ============================================================
+   Utilities
+   ============================================================ */
+function parsePoints(text){
+ const lines=text.trim().split(/\n/).filter(l=>l.trim()&&!l.startsWith('#'));
+ const points=[];
+ for(const l of lines){
+  const p=l.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+  if(p.length>=2&&p.every(Number.isFinite))points.push([p[0],p[1]]);
+ }
+ if(!points.length)throw Error('Enter points, one per line as "x y".');
+ return points;
+}
+function parsePointsAndNumber(text){
+ const blocks=text.trim().split(/\n\s*\n/);
+ if(blocks.length>=2){
+  return {points:parsePoints(blocks[0]),num:parseFloat(blocks[1].trim())||0};
+ }
+ const lines=text.trim().split(/\n/);
+ const last=lines.pop().trim();
+ if(/^-?\d+(\.\d+)?$/.test(last)){
+  return {points:parsePoints(lines.join('\n')),num:parseFloat(last)};
+ }
+ return {points:parsePoints(text),num:0};
+}
+function fmtNum(x,d=3){
+ if(!Number.isFinite(x))return String(x);
+ if(Math.abs(x)<1e-12)return '0';
+ if(Math.abs(x)>=1e5||Math.abs(x)<1e-3)return x.toExponential(d-1);
+ return parseFloat(x.toFixed(d)).toString();
+}
+function svgPlot(width,height,inner){
+ return `<svg class="geo-svg" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+}
+function bbox(points,pad=40,width=700,height=400){
+ const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);
+ const minX=Math.min(...xs),maxX=Math.max(...xs);
+ const minY=Math.min(...ys),maxY=Math.max(...ys);
+ const spanX=maxX-minX||1,spanY=maxY-minY||1;
+ const scale=Math.min((width-pad*2)/spanX,(height-pad*2)/spanY);
+ const offX=(width-spanX*scale)/2-minX*scale;
+ const offY=(height-spanY*scale)/2-minY*scale;
+ const tx=x=>x*scale+offX;
+ const ty=y=>height-(y*scale+offY);
+ return {tx,ty,scale};
+}
+
+/* ============================================================
+   Labs
+   ============================================================ */
+function demoPoints(text){
+ const points=parsePoints(text);
+ if(points.length<2)throw Error('Enter at least 2 points.');
+ const a=points[0],b=points[1];
+ const v=[b[0]-a[0],b[1]-a[1]];
+ const n=Math.hypot(v[0],v[1]);
+ const sum=[a[0]+v[0],a[1]+v[1]];
+ const {tx,ty}=bbox([a,b],60);
+ return {
+  encoded:`A = (${a.join(', ')})\nB = (${b.join(', ')})\n\nVector AB = (${v.join(', ')})\nLength = ${fmtNum(n)}\nUnit = (${fmtNum(v[0]/n)}, ${fmtNum(v[1]/n)})\nA + AB = (${sum.join(', ')})  (same as B)`,
+  html:svgPlot(700,300,`
+   <line x1="${tx(a[0])}" y1="${ty(a[1])}" x2="${tx(b[0])}" y2="${ty(b[1])}" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr)"/>
+   <defs><marker id="arr" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="var(--accent)"/></marker></defs>
+   <circle cx="${tx(a[0])}" cy="${ty(a[1])}" r="5" fill="var(--good)"/>
+   <circle cx="${tx(b[0])}" cy="${ty(b[1])}" r="5" fill="var(--good)"/>
+   <text x="${tx(a[0])+8}" y="${ty(a[1])-8}" fill="var(--text)" font-size="12" font-family="monospace">A</text>
+   <text x="${tx(b[0])+8}" y="${ty(b[1])-8}" fill="var(--text)" font-size="12" font-family="monospace">B</text>`),
+  decoded:`A point is a location, a vector is a displacement. B - A gives the vector from A to B. A + (B - A) returns to B.`
+ };
+}
+function demoOrientation(text){
+ const points=parsePoints(text);
+ if(points.length<3)throw Error('Enter at least 3 points.');
+ const rows=[];
+ for(let i=0;i+2<points.length;i+=3){
+  const a=points[i],b=points[i+1],c=points[i+2];
+  const v=(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+  const label=v>0?'counterclockwise':v<0?'clockwise':'collinear';
+  rows.push(`  A=(${a}) B=(${b}) C=(${c})  cross=${fmtNum(v,6)}  ${label}`);
+ }
+ const {tx,ty}=bbox(points,50);
+ let svg='';
+ for(let i=0;i+2<points.length;i+=3){
+  const a=points[i],b=points[i+1],c=points[i+2];
+  const v=(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+  const color=v>0?'var(--good)':v<0?'var(--bad)':'var(--warn)';
+  svg+=`<polygon points="${tx(a[0])},${ty(a[1])} ${tx(b[0])},${ty(b[1])} ${tx(c[0])},${ty(c[1])}" fill="${color}" opacity="0.2" stroke="${color}" stroke-width="1.5"/>`;
+  for(const p of [a,b,c]) svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="var(--accent)"/>`;
+ }
+ return {
+  encoded:`Orientation results:\n${rows.join('\n')}\n\nPositive = counterclockwise, negative = clockwise, zero = collinear.`,
+  html:svgPlot(700,350,svg),
+  decoded:`Orientation is a signed area. It is the most important predicate in computational geometry.`
+ };
+}
+function demoDistances(text){
+ const points=parsePoints(text);
+ if(points.length<3)throw Error('Enter 3 points: segment endpoints A, B, and query point P.');
+ const a=points[0],b=points[1],p=points[2];
+ const ab=[b[0]-a[0],b[1]-a[1]];
+ const ap=[p[0]-a[0],p[1]-a[1]];
+ const denom=ab[0]*ab[0]+ab[1]*ab[1];
+ let t=denom>0?(ap[0]*ab[0]+ap[1]*ab[1])/denom:0;
+ t=Math.max(0,Math.min(1,t));
+ const closest=[a[0]+t*ab[0],a[1]+t*ab[1]];
+ const dPP=Math.hypot(p[0]-a[0],p[1]-a[1]);
+ const dSeg=Math.hypot(p[0]-closest[0],p[1]-closest[1]);
+ const cross=ab[0]*ap[1]-ab[1]*ap[0];
+ const dLine=Math.abs(cross)/Math.hypot(ab[0],ab[1]);
+ const {tx,ty}=bbox([a,b,p],60);
+ return {
+  encoded:`Segment: A=(${a}) B=(${b})\nPoint: P=(${p})\n\nProjection t = ${fmtNum(t)}\nClosest point on segment: (${fmtNum(closest[0])}, ${fmtNum(closest[1])})\n\n|P - A| = ${fmtNum(dPP)}\n|P - closest| = ${fmtNum(dSeg)}  (segment distance)\nperpendicular to line = ${fmtNum(dLine)}  (line distance)`,
+  html:svgPlot(700,350,`
+   <line x1="${tx(a[0])}" y1="${ty(a[1])}" x2="${tx(b[0])}" y2="${ty(b[1])}" stroke="var(--accent)" stroke-width="2"/>
+   <line x1="${tx(p[0])}" y1="${ty(p[1])}" x2="${tx(closest[0])}" y2="${ty(closest[1])}" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="4,4"/>
+   <circle cx="${tx(a[0])}" cy="${ty(a[1])}" r="4" fill="var(--good)"/>
+   <circle cx="${tx(b[0])}" cy="${ty(b[1])}" r="4" fill="var(--good)"/>
+   <circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="5" fill="var(--warn)"/>
+   <circle cx="${tx(closest[0])}" cy="${ty(closest[1])}" r="3" fill="var(--bad)"/>`),
+  decoded:`Point-segment distance clamps the projection to [0, 1]. If t is clamped, the closest point is an endpoint. Point-line distance ignores the segment bounds.`
+ };
+}
+function demoSegments(text){
+ const blocks=text.trim().split(/\n\s*\n/);
+ const allPairs=[];
+ const allPts=[];
+ for(const blk of blocks){
+  const pts=parsePoints(blk);
+  if(pts.length>=4){allPairs.push([pts[0],pts[1],pts[2],pts[3]]);allPts.push(...pts)}
+ }
+ if(!allPairs.length)throw Error('Enter segments, one per line as "x1 y1 x2 y2". Use blank lines between independent pairs.');
+ function orient(a,b,c){return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])}
+ function onSeg(a,b,p){
+  return Math.min(a[0],b[0])-1e-9<=p[0]&&p[0]<=Math.max(a[0],b[0])+1e-9 &&
+         Math.min(a[1],b[1])-1e-9<=p[1]&&p[1]<=Math.max(a[1],b[1])+1e-9;
+ }
+ function intersect(a,b,c,d){
+  const o1=orient(a,b,c),o2=orient(a,b,d),o3=orient(c,d,a),o4=orient(c,d,b);
+  if(o1*o2<0&&o3*o4<0)return true;
+  if(Math.abs(o1)<1e-12&&onSeg(a,b,c))return true;
+  if(Math.abs(o2)<1e-12&&onSeg(a,b,d))return true;
+  if(Math.abs(o3)<1e-12&&onSeg(c,d,a))return true;
+  if(Math.abs(o4)<1e-12&&onSeg(c,d,b))return true;
+  return false;
+ }
+ const rows=allPairs.map(([a,b,c,d])=>{
+  const res=intersect(a,b,c,d);
+  return `  (${a})–(${b}) vs (${c})–(${d})  →  ${res?'INTERSECT':'no intersection'}`;
+ });
+ const {tx,ty}=bbox(allPts,50);
+ let svg='';
+ allPairs.forEach(([a,b,c,d],i)=>{
+  const hit=intersect(a,b,c,d);
+  const color=hit?'var(--bad)':'var(--accent)';
+  svg+=`<line x1="${tx(a[0])}" y1="${ty(a[1])}" x2="${tx(b[0])}" y2="${ty(b[1])}" stroke="${color}" stroke-width="2"/>`;
+  svg+=`<line x1="${tx(c[0])}" y1="${ty(c[1])}" x2="${tx(d[0])}" y2="${ty(d[1])}" stroke="${color}" stroke-width="2"/>`;
+ });
+ return {
+  encoded:`Segment pairs:\n${rows.join('\n')}`,
+  html:svgPlot(700,350,svg),
+  decoded:`Two segments intersect if orientations of the endpoints have opposite signs for both pairs. Collinear cases are handled separately. Red = intersection, blue = no intersection.`
+ };
+}
+function demoPointInPoly(text){
+ const blocks=text.trim().split(/\n\s*\n/);
+ const poly=parsePoints(blocks[0]);
+ const queries=blocks.length>1?parsePoints(blocks[1]):[[0,0]];
+ function inPoly(p){
+  let inside=false;
+  for(let i=0;i<poly.length;i++){
+   const a=poly[i],b=poly[(i+1)%poly.length];
+   if((a[1]>p[1])!==(b[1]>p[1])){
+    const xInt=a[0]+(p[1]-a[1])/(b[1]-a[1])*(b[0]-a[0]);
+    if(p[0]<xInt)inside=!inside;
+   }
+  }
+  return inside;
+ }
+ const rows=queries.map(p=>`  (${p}) → ${inPoly(p)?'INSIDE':'outside'}`);
+ const {tx,ty}=bbox([...poly,...queries],50);
+ let svg=`<polygon points="${poly.map(p=>`${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="var(--accent)" opacity="0.15" stroke="var(--accent)" stroke-width="2"/>`;
+ for(const p of queries){
+  const inside=inPoly(p);
+  svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="6" fill="${inside?'var(--good)':'var(--bad)'}"/>`;
+ }
+ return {
+  encoded:`Polygon: ${poly.map(p=>`(${p})`).join(' ')}\n\nQuery results:\n${rows.join('\n')}`,
+  html:svgPlot(700,350,svg),
+  decoded:`Ray casting: count how many polygon edges a horizontal ray from the query point crosses. Odd = inside.`
+ };
+}
+function demoGraham(text){
+ const points=parsePoints(text);
+ if(points.length<3)throw Error('Enter at least 3 points.');
+ function orient(a,b,c){return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])}
+ const pts=[...points].sort((a,b)=>a[1]-b[1]||a[0]-b[0]);
+ const pivot=pts[0];
+ const rest=pts.slice(1).sort((a,b)=>{
+  const ang=Math.atan2(a[1]-pivot[1],a[0]-pivot[0])-Math.atan2(b[1]-pivot[1],b[0]-pivot[0]);
+  if(Math.abs(ang)>1e-9)return ang;
+  return Math.hypot(a[0]-pivot[0],a[1]-pivot[1])-Math.hypot(b[0]-pivot[0],b[1]-pivot[1]);
+ });
+ const sorted=[pivot,...rest];
+ const stack=[sorted[0],sorted[1]];
+ for(let i=2;i<sorted.length;i++){
+  while(stack.length>=2&&orient(stack[stack.length-2],stack[stack.length-1],sorted[i])<=0)stack.pop();
+  stack.push(sorted[i]);
+ }
+ const {tx,ty}=bbox(points,50);
+ let svg='';
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="var(--muted)"/>`;
+ svg+=`<polygon points="${stack.map(p=>`${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="var(--accent)" opacity="0.2" stroke="var(--accent)" stroke-width="2"/>`;
+ for(const p of stack)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="6" fill="var(--good)"/>`;
+ return {
+  encoded:`Convex hull of ${points.length} points:\n${stack.map(p=>`  (${p})`).join('\n')}\n\nHull size: ${stack.length}`,
+  html:svgPlot(700,400,svg),
+  decoded:`Graham scan: sort by angle, then walk maintaining left turns. Result is the convex hull in counterclockwise order.`
+ };
+}
+function demoMonotone(text){
+ const points=parsePoints(text);
+ if(points.length<3)throw Error('Enter at least 3 points.');
+ function cross(o,a,b){return (a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])}
+ const pts=[...points].sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+ const lower=[];
+ for(const p of pts){
+  while(lower.length>=2&&cross(lower[lower.length-2],lower[lower.length-1],p)<=0)lower.pop();
+  lower.push(p);
+ }
+ const upper=[];
+ for(const p of [...pts].reverse()){
+  while(upper.length>=2&&cross(upper[upper.length-2],upper[upper.length-1],p)<=0)upper.pop();
+  upper.push(p);
+ }
+ const hull=lower.slice(0,-1).concat(upper.slice(0,-1));
+ const {tx,ty}=bbox(points,50);
+ let svg='';
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="var(--muted)"/>`;
+ svg+=`<polygon points="${hull.map(p=>`${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="var(--accent)" opacity="0.2" stroke="var(--accent)" stroke-width="2"/>`;
+ for(const p of hull)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="6" fill="var(--good)"/>`;
+ return {
+  encoded:`Andrew's monotone chain hull:\n${hull.map(p=>`  (${p})`).join('\n')}\n\nHull size: ${hull.length}`,
+  html:svgPlot(700,400,svg),
+  decoded:`Monotone chain builds the lower and upper hull separately. No angular sort needed.`
+ };
+}
+function demoJarvis(text){
+ const points=parsePoints(text);
+ if(points.length<3)throw Error('Enter at least 3 points.');
+ function cross(o,a,b){return (a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])}
+ const start=points.reduce((m,p)=>(p[1]<m[1]||(p[1]===m[1]&&p[0]<m[0]))?p:m);
+ const hull=[start];
+ let cur=start;
+ while(true){
+  let nxt=points[0]===cur?points[1]:points[0];
+  for(const p of points){
+   if(p===cur)continue;
+   if(cross(cur,nxt,p)<0)nxt=p;
+  }
+  if(nxt===start)break;
+  hull.push(nxt);
+  cur=nxt;
+ }
+ const {tx,ty}=bbox(points,50);
+ let svg='';
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="var(--muted)"/>`;
+ svg+=`<polygon points="${hull.map(p=>`${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="var(--accent)" opacity="0.2" stroke="var(--accent)" stroke-width="2"/>`;
+ for(const p of hull)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="6" fill="var(--good)"/>`;
+ return {
+  encoded:`Jarvis march hull:\n${hull.map(p=>`  (${p})`).join('\n')}\n\nHull size: ${hull.length}`,
+  html:svgPlot(700,400,svg),
+  decoded:`Jarvis march wraps around the point set. O(nh) where h is the hull size.`
+ };
+}
+function demoQuickhull(text){
+ const points=parsePoints(text);
+ if(points.length<3)throw Error('Enter at least 3 points.');
+ function cross(o,a,b){return (a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])}
+ function side(a,b,pts){return pts.filter(p=>cross(a,b,p)>0)}
+ function farthest(a,b,pts){
+  let best=null,bd=-1;
+  for(const p of pts){const d=Math.abs(cross(a,b,p));if(d>bd){bd=d;best=p}}
+  return best;
+ }
+ function hullSide(a,b,pts){
+  if(!pts.length)return [];
+  const c=farthest(a,b,pts);
+  const left=side(a,c,pts.filter(p=>p!==c));
+  const right=side(c,b,pts.filter(p=>p!==c));
+  return hullSide(a,c,left).concat([c],hullSide(c,b,right));
+ }
+ const pts=[...points].sort((x,y)=>x[0]-y[0]||x[1]-y[1]);
+ const left=pts[0],right=pts[pts.length-1];
+ const above=pts.filter(p=>p!==left&&p!==right&&cross(left,right,p)>0);
+ const below=pts.filter(p=>p!==left&&p!==right&&cross(left,right,p)<0);
+ const hull=[left,...hullSide(left,right,above),right,...hullSide(right,left,below)];
+ const {tx,ty}=bbox(points,50);
+ let svg='';
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="var(--muted)"/>`;
+ svg+=`<polygon points="${hull.map(p=>`${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="var(--accent)" opacity="0.2" stroke="var(--accent)" stroke-width="2"/>`;
+ for(const p of hull)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="6" fill="var(--good)"/>`;
+ return {
+  encoded:`Quickhull result:\n${hull.map(p=>`  (${p})`).join('\n')}\n\nHull size: ${hull.length}`,
+  html:svgPlot(700,400,svg),
+  decoded:`Quickhull recursively splits by the farthest point. Average O(n log n).`
+ };
+}
+function demoClosestPair(text){
+ const points=parsePoints(text);
+ if(points.length<2)throw Error('Enter at least 2 points.');
+ let best=null,bestD=Infinity;
+ for(let i=0;i<points.length;i++)for(let j=i+1;j<points.length;j++){
+  const d=Math.hypot(points[i][0]-points[j][0],points[i][1]-points[j][1]);
+  if(d<bestD){bestD=d;best=[points[i],points[j]]}
+ }
+ const {tx,ty}=bbox(points,50);
+ let svg='';
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="var(--muted)"/>`;
+ svg+=`<line x1="${tx(best[0][0])}" y1="${ty(best[0][1])}" x2="${tx(best[1][0])}" y2="${ty(best[1][1])}" stroke="var(--bad)" stroke-width="2"/>`;
+ for(const p of best)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="7" fill="var(--good)"/>`;
+ return {
+  encoded:`Closest pair: (${best[0]}) and (${best[1]})\nDistance: ${fmtNum(bestD)}\nTotal points: ${points.length}`,
+  html:svgPlot(700,400,svg),
+  decoded:`Brute force O(n²) for the demo. Divide and conquer gives O(n log n).`
+ };
+}
+function demoKdTreeGeo(text){
+ const blocks=text.trim().split(/\n\s*\n/);
+ const points=parsePoints(blocks[0]);
+ const query=blocks.length>1?parsePoints(blocks[1])[0]:points[0];
+ function build(pts,depth){
+  if(!pts.length)return null;
+  const axis=depth%2;
+  const s=[...pts].sort((a,b)=>a[axis]-b[axis]);
+  const mid=s.length>>1;
+  return {p:s[mid],axis,l:build(s.slice(0,mid),depth+1),r:build(s.slice(mid+1),depth+1)};
+ }
+ function nearest(node,q,best){
+  if(!node)return best;
+  const d=Math.hypot(node.p[0]-q[0],node.p[1]-q[1]);
+  if(!best||d<best.d)best={d,p:node.p};
+  const axis=node.axis;
+  const first=q[axis]<node.p[axis]?node.l:node.r;
+  const second=q[axis]<node.p[axis]?node.r:node.l;
+  best=nearest(first,q,best);
+  if(Math.abs(q[axis]-node.p[axis])<best.d)best=nearest(second,q,best);
+  return best;
+ }
+ const tree=build(points,0);
+ const result=nearest(tree,query,null);
+ const {tx,ty}=bbox([...points,query],50);
+ let svg='';
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="var(--muted)"/>`;
+ svg+=`<circle cx="${tx(query[0])}" cy="${ty(query[1])}" r="6" fill="var(--warn)"/>`;
+ svg+=`<circle cx="${tx(result.p[0])}" cy="${ty(result.p[1])}" r="6" fill="var(--good)"/>`;
+ svg+=`<line x1="${tx(query[0])}" y1="${ty(query[1])}" x2="${tx(result.p[0])}" y2="${ty(result.p[1])}" stroke="var(--bad)" stroke-width="2" stroke-dasharray="4,4"/>`;
+ return {
+  encoded:`Query: (${query})\nNearest: (${result.p})\nDistance: ${fmtNum(result.d)}`,
+  html:svgPlot(700,400,svg),
+  decoded:`k-d tree nearest neighbour: recursively prune branches that cannot contain a closer point.`
+ };
+}
+function demoDelaunay(text){
+ const points=parsePoints(text);
+ if(points.length<3)throw Error('Enter at least 3 points.');
+ // Naive Delaunay by checking circumcircles
+ function circumcircle(a,b,c){
+  const ax=a[0],ay=a[1],bx=b[0],by=b[1],cx=c[0],cy=c[1];
+  const d=2*(ax*(by-cy)+bx*(cy-ay)+cx*(ay-by));
+  if(Math.abs(d)<1e-12)return null;
+  const ux=((ax*ax+ay*ay)*(by-cy)+(bx*bx+by*by)*(cy-ay)+(cx*cx+cy*cy)*(ay-by))/d;
+  const uy=((ax*ax+ay*ay)*(cx-bx)+(bx*bx+by*by)*(ax-cx)+(cx*cx+cy*cy)*(bx-ax))/d;
+  return [ux,uy,Math.hypot(ax-ux,ay-uy)];
+ }
+ function inCircle(c,p){return Math.hypot(p[0]-c[0],p[1]-c[1])<c[2]-1e-9}
+ const triangles=[];
+ for(let i=0;i<points.length;i++)for(let j=i+1;j<points.length;j++)for(let k=j+1;k<points.length;k++){
+  const c=circumcircle(points[i],points[j],points[k]);
+  if(!c)continue;
+  let ok=true;
+  for(let m=0;m<points.length;m++){
+   if(m===i||m===j||m===k)continue;
+   if(inCircle(c,points[m])){ok=false;break}
+  }
+  if(ok)triangles.push([i,j,k]);
+ }
+ const {tx,ty}=bbox(points,50);
+ let svg='';
+ for(const[i,j,k]of triangles){
+  svg+=`<polygon points="${tx(points[i][0])},${ty(points[i][1])} ${tx(points[j][0])},${ty(points[j][1])} ${tx(points[k][0])},${ty(points[k][1])}" fill="var(--accent)" opacity="0.15" stroke="var(--accent)" stroke-width="1.5"/>`;
+ }
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="5" fill="var(--good)"/>`;
+ return {
+  encoded:`Delaunay triangulation\nPoints: ${points.length}\nTriangles: ${triangles.length}\nTriangulation: ${triangles.map(t=>`(${points[t[0]]},${points[t[1]]},${points[t[2]]})`).join(', ')}`,
+  html:svgPlot(700,400,svg),
+  decoded:`Delaunay triangles have empty circumcircles. This is the dual of the Voronoi diagram.`
+ };
+}
+function demoLloyd(text){
+ const points=parsePoints(text);
+ if(points.length<2)throw Error('Enter at least 2 points.');
+ // Simulate one iteration using centroids of k-means style clusters (approximation)
+ const iterations=5;
+ let sites=[...points.map(p=>[...p])];
+ for(let it=0;it<iterations;it++){
+  // assign each point to nearest site
+  const clusters=sites.map(()=>[]);
+  for(const p of points){
+   let best=0,bd=Infinity;
+   sites.forEach((s,i)=>{const d=Math.hypot(p[0]-s[0],p[1]-s[1]);if(d<bd){bd=d;best=i}});
+   clusters[best].push(p);
+  }
+  // move sites to centroids
+  sites=clusters.map((c,i)=>{
+   if(!c.length)return sites[i];
+   const cx=c.reduce((s,p)=>s+p[0],0)/c.length;
+   const cy=c.reduce((s,p)=>s+p[1],0)/c.length;
+   return [cx,cy];
+  });
+ }
+ const {tx,ty}=bbox([...points,...sites],50);
+ let svg='';
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="3" fill="var(--muted)"/>`;
+ for(let i=0;i<sites.length;i++){
+  svg+=`<line x1="${tx(points[i][0])}" y1="${ty(points[i][1])}" x2="${tx(sites[i][0])}" y2="${ty(sites[i][1])}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3,3"/>`;
+  svg+=`<circle cx="${tx(points[i][0])}" cy="${ty(points[i][1])}" r="4" fill="var(--good)"/>`;
+  svg+=`<circle cx="${tx(sites[i][0])}" cy="${ty(sites[i][1])}" r="6" fill="var(--warn)"/>`;
+ }
+ return {
+  encoded:`Lloyd relaxation, ${iterations} iterations\n\nOriginal → relaxed:\n${points.map((p,i)=>`  (${p}) → (${sites[i].map(v=>fmtNum(v))})`).join('\n')}`,
+  html:svgPlot(700,400,svg),
+  decoded:`Each site moves to the centroid of its current region. Iterating converges to a centroidal Voronoi tessellation. Green = original, orange = relaxed.`
+ };
+}
+function demoCalipers(text){
+ const points=parsePoints(text);
+ if(points.length<2)throw Error('Enter at least 2 points.');
+ function cross(o,a,b){return (a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])}
+ const pts=[...points].sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+ const lower=[];
+ for(const p of pts){
+  while(lower.length>=2&&cross(lower[lower.length-2],lower[lower.length-1],p)<=0)lower.pop();
+  lower.push(p);
+ }
+ const upper=[];
+ for(const p of [...pts].reverse()){
+  while(upper.length>=2&&cross(upper[upper.length-2],upper[upper.length-1],p)<=0)upper.pop();
+  upper.push(p);
+ }
+ const hull=lower.slice(0,-1).concat(upper.slice(0,-1));
+ let best=null,bestD=0;
+ for(let i=0;i<hull.length;i++)for(let j=i+1;j<hull.length;j++){
+  const d=Math.hypot(hull[i][0]-hull[j][0],hull[i][1]-hull[j][1]);
+  if(d>bestD){bestD=d;best=[hull[i],hull[j]]}
+ }
+ const {tx,ty}=bbox([...points,...hull],50);
+ let svg='';
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="3" fill="var(--muted)"/>`;
+ svg+=`<polygon points="${hull.map(p=>`${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="var(--accent)" opacity="0.1" stroke="var(--accent)" stroke-width="1.5"/>`;
+ svg+=`<line x1="${tx(best[0][0])}" y1="${ty(best[0][1])}" x2="${tx(best[1][0])}" y2="${ty(best[1][1])}" stroke="var(--bad)" stroke-width="2.5"/>`;
+ for(const p of best)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="7" fill="var(--good)"/>`;
+ return {
+  encoded:`Convex hull size: ${hull.length}\nDiameter: ${fmtNum(bestD)}\nBetween (${best[0]}) and (${best[1]})`,
+  html:svgPlot(700,400,svg),
+  decoded:`Diameter of a point set = maximum distance. It is achieved at a pair of antipodal hull vertices. Rotating calipers finds it in O(h) after the hull.`
+ };
+}
+function demoDiameterRect(text){
+ const points=parsePoints(text);
+ if(points.length<2)throw Error('Enter at least 2 points.');
+ function cross(o,a,b){return (a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])}
+ const pts=[...points].sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+ const lower=[];
+ for(const p of pts){while(lower.length>=2&&cross(lower[lower.length-2],lower[lower.length-1],p)<=0)lower.pop();lower.push(p)}
+ const upper=[];
+ for(const p of [...pts].reverse()){while(upper.length>=2&&cross(upper[upper.length-2],upper[upper.length-1],p)<=0)upper.pop();upper.push(p)}
+ const hull=lower.slice(0,-1).concat(upper.slice(0,-1));
+ let bestArea=Infinity,bestRect=null;
+ for(let i=0;i<hull.length;i++){
+  const a=hull[i],b=hull[(i+1)%hull.length];
+  const dx=b[0]-a[0],dy=b[1]-a[1];
+  const L=Math.hypot(dx,dy);
+  const ux=dx/L,uy=dy/L;
+  const px=-uy,py=ux;
+  let minU=Infinity,maxU=-Infinity,minV=Infinity,maxV=-Infinity;
+  for(const p of hull){
+   const u=(p[0]-a[0])*ux+(p[1]-a[1])*uy;
+   const v=(p[0]-a[0])*px+(p[1]-a[1])*py;
+   minU=Math.min(minU,u);maxU=Math.max(maxU,u);
+   minV=Math.min(minV,v);maxV=Math.max(maxV,v);
+  }
+  const w=maxU-minU,h=maxV-minV;
+  const area=w*h;
+  if(area<bestArea){bestArea=area;bestRect={a,ux,uy,px,py,minU,maxU,minV,maxV}}
+ }
+ const {tx,ty}=bbox(points,50);
+ let svg='';
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="var(--muted)"/>`;
+ const b=bestRect;
+ const corners=[
+  [b.a[0]+b.minU*b.ux+b.minV*b.px, b.a[1]+b.minU*b.uy+b.minV*b.py],
+  [b.a[0]+b.maxU*b.ux+b.minV*b.px, b.a[1]+b.maxU*b.uy+b.minV*b.py],
+  [b.a[0]+b.maxU*b.ux+b.maxV*b.px, b.a[1]+b.maxU*b.uy+b.maxV*b.py],
+  [b.a[0]+b.minU*b.ux+b.maxV*b.px, b.a[1]+b.minU*b.uy+b.maxV*b.py],
+ ];
+ svg+=`<polygon points="${corners.map(p=>`${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="none" stroke="var(--bad)" stroke-width="2"/>`;
+ return {
+  encoded:`Minimum-area enclosing rectangle\nArea: ${fmtNum(bestArea)}\nOrientation: ${fmtNum(Math.atan2(b.uy,b.ux)*180/Math.PI)}°`,
+  html:svgPlot(700,400,svg),
+  decoded:`The minimum enclosing rectangle has one side flush with a hull edge. Try all hull edges to find the minimum.`
+ };
+}
+function demoWelzl(text){
+ const points=parsePoints(text);
+ if(points.length<1)throw Error('Enter at least 1 point.');
+ function circle2(a,b){return [(a[0]+b[0])/2,(a[1]+b[1])/2,Math.hypot(a[0]-b[0],a[1]-b[1])/2]}
+ function circle3(a,b,c){
+  const ax=a[0],ay=a[1],bx=b[0],by=b[1],cx=c[0],cy=c[1];
+  const d=2*(ax*(by-cy)+bx*(cy-ay)+cx*(ay-by));
+  if(Math.abs(d)<1e-12)return circle2(a,b);
+  const ux=((ax*ax+ay*ay)*(by-cy)+(bx*bx+by*by)*(cy-ay)+(cx*cx+cy*cy)*(ay-by))/d;
+  const uy=((ax*ax+ay*ay)*(cx-bx)+(bx*bx+by*by)*(ax-cx)+(cx*cx+cy*cy)*(bx-ax))/d;
+  return [ux,uy,Math.hypot(ax-ux,ay-uy)];
+ }
+ function inside(c,p){return Math.hypot(p[0]-c[0],p[1]-c[1])<=c[2]+1e-9}
+ function rec(pts,R){
+  if(!pts.length||R.length===3){
+   if(R.length===0)return[0,0,0];
+   if(R.length===1)return[R[0][0],R[0][1],0];
+   if(R.length===2)return circle2(R[0],R[1]);
+   return circle3(R[0],R[1],R[2]);
+  }
+  const p=pts[0];
+  const D=rec(pts.slice(1),R);
+  if(inside(D,p))return D;
+  return rec(pts.slice(1),[...R,p]);
+ }
+ const shuffled=[...points].sort(()=>Math.random()-0.5);
+ const c=rec(shuffled,[]);
+ const {tx,ty}=bbox(points,60);
+ let svg='';
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="var(--muted)"/>`;
+ const scale=(tx(1)-tx(0));
+ svg+=`<circle cx="${tx(c[0])}" cy="${ty(c[1])}" r="${c[2]*scale}" fill="none" stroke="var(--accent)" stroke-width="2"/>`;
+ for(const p of points)if(Math.hypot(p[0]-c[0],p[1]-c[1])>c[2]-1e-6)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="7" fill="var(--good)"/>`;
+ return {
+  encoded:`Smallest enclosing circle\nCenter: (${fmtNum(c[0])}, ${fmtNum(c[1])})\nRadius: ${fmtNum(c[2])}\n\nDetermined by 2 or 3 boundary points.`,
+  html:svgPlot(700,400,svg),
+  decoded:`Welzl's algorithm: randomized incremental construction. Each new point that is outside the current circle becomes a boundary constraint. Expected O(n).`
+ };
+}
+function demoSat(text){
+ const blocks=text.trim().split(/\n\s*\n/);
+ const polys=[];
+ for(const blk of blocks){
+  const pts=parsePoints(blk);
+  if(pts.length>=3)polys.push(pts);
+ }
+ if(polys.length<2)throw Error('Enter two polygons separated by a blank line.');
+ function project(poly,axis){
+  const ds=poly.map(p=>p[0]*axis[0]+p[1]*axis[1]);
+  return [Math.min(...ds),Math.max(...ds)];
+ }
+ function axes(p){
+  const out=[];
+  for(let i=0;i<p.length;i++){
+   const a=p[i],b=p[(i+1)%p.length];
+   const dx=b[0]-a[0],dy=b[1]-a[1];
+   out.push([-dy,dx]);
+  }
+  return out;
+ }
+ function overlaps(a,b){return !(a[1]<b[0]||b[1]<a[0])}
+ let separated=false;
+ let separatingAxis=null;
+ const allAxes=[...axes(polys[0]),...axes(polys[1])];
+ for(const ax of allAxes){
+  const p1=project(polys[0],ax);
+  const p2=project(polys[1],ax);
+  if(!overlaps(p1,p2)){separated=true;separatingAxis=ax;break}
+ }
+ const allPts=polys.flat();
+ const {tx,ty}=bbox(allPts,60);
+ let svg='';
+ for(const poly of polys){
+  svg+=`<polygon points="${poly.map(p=>`${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="${poly===polys[0]?'var(--accent)':'var(--warn)'}" opacity="0.25" stroke="${poly===polys[0]?'var(--accent)':'var(--warn)'}" stroke-width="2"/>`;
+  for(const p of poly)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="var(--text)"/>`;
+ }
+ if(separatingAxis){
+  const cx=(Math.min(...allPts.map(p=>p[0]))+Math.max(...allPts.map(p=>p[0])))/2;
+  const cy=(Math.min(...allPts.map(p=>p[1]))+Math.max(...allPts.map(p=>p[1])))/2;
+  const L=1000;
+  const dx=separatingAxis[0],dy=separatingAxis[1];
+  const norm=Math.hypot(dx,dy);
+  svg+=`<line x1="${tx(cx-dx/norm*L)}" y1="${ty(cy-dy/norm*L)}" x2="${tx(cx+dx/norm*L)}" y2="${ty(cy+dy/norm*L)}" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="6,4"/>`;
+ }
+ return {
+  encoded:`SAT collision test:\n  ${separated?'SEPARATED (no collision)':'OVERLAPPING (collision)'}\n${separatingAxis?`  Separating axis: (${fmtNum(separatingAxis[0])}, ${fmtNum(separatingAxis[1])})`:''}`,
+  html:svgPlot(700,400,svg),
+  decoded:`SAT projects both polygons onto candidate axes. If any axis has disjoint projections, the shapes do not collide. Red dashed line = separating axis.`
+ };
+}
+function demoDouglasPeucker(text){
+ const parts=parsePointsAndNumber(text);
+ const points=parts.points;
+ const eps=parts.num||0.3;
+ function perpDist(p,a,b){
+  if(a[0]===b[0]&&a[1]===b[1])return Math.hypot(p[0]-a[0],p[1]-a[1]);
+  const t=((p[0]-a[0])*(b[0]-a[0])+(p[1]-a[1])*(b[1]-a[1]))/(Math.pow(b[0]-a[0],2)+Math.pow(b[1]-a[1],2));
+  const tc=Math.max(0,Math.min(1,t));
+  const proj=[a[0]+tc*(b[0]-a[0]),a[1]+tc*(b[1]-a[1])];
+  return Math.hypot(p[0]-proj[0],p[1]-proj[1]);
+ }
+ function dp(pts){
+  if(pts.length<3)return pts;
+  let dmax=0,idx=0;
+  for(let i=1;i<pts.length-1;i++){
+   const d=perpDist(pts[i],pts[0],pts[pts.length-1]);
+   if(d>dmax){dmax=d;idx=i}
+  }
+  if(dmax>eps){
+   const left=dp(pts.slice(0,idx+1));
+   const right=dp(pts.slice(idx));
+   return left.slice(0,-1).concat(right);
+  }
+  return [pts[0],pts[pts.length-1]];
+ }
+ const simplified=dp(points);
+ const {tx,ty}=bbox(points,50);
+ let svg=`<polyline points="${points.map(p=>`${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="none" stroke="var(--muted)" stroke-width="1.5"/>`;
+ svg+=`<polyline points="${simplified.map(p=>`${tx(p[0])},${ty(p[1])}`).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>`;
+ for(const p of points)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="3" fill="var(--muted)"/>`;
+ for(const p of simplified)svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="6" fill="var(--good)"/>`;
+ return {
+  encoded:`Original points: ${points.length}\nSimplified: ${simplified.length}\nEpsilon: ${eps}\n\nKept:\n${simplified.map(p=>`  (${p})`).join('\n')}`,
+  html:svgPlot(700,300,svg),
+  decoded:`Douglas-Peucker keeps the endpoints and the farthest vertex. Green dots = kept vertices.`
+ };
+}
+function demoMarching(text){
+ const n=Math.max(5,Math.min(parseInt(text.trim())||10,25));
+ const grid=[];
+ let s=42;
+ const rnd=()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff};
+ for(let i=0;i<n;i++){grid.push([]);for(let j=0;j<n;j++)grid[i].push(Math.sin(i*0.7)+Math.cos(j*0.5)+rnd()*0.3)}
+ const iso=1.0;
+ const segments=[];
+ const cell=40;
+ const w=n*cell+40,h=n*cell+40;
+ const tx=i=>i*cell+20,ty=j=>j*cell+20;
+ for(let i=0;i<n-1;i++)for(let j=0;j<n-1;j++){
+  const tl=grid[i][j]>iso,tr=grid[i][j+1]>iso,br=grid[i+1][j+1]>iso,bl=grid[i+1][j]>iso;
+  const mask=(tl?8:0)|(tr?4:0)|(br?2:0)|(bl?1:0);
+  if(mask===0||mask===15)continue;
+  const edges=[
+   [[tx(j+0.5),ty(i)],[tx(j+1),ty(i+0.5)]],
+   [[tx(j+1),ty(i+0.5)],[tx(j+0.5),ty(i+1)]],
+   [[tx(j+0.5),ty(i+1)],[tx(j),ty(i+0.5)]],
+   [[tx(j),ty(i+0.5)],[tx(j+0.5),ty(i)]],
+  ];
+  // Simple: draw one line for any crossing edge pair based on mask
+  // Not exact but visually shows the contour
+  const pairs=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+  const frac=Math.abs(iso-((grid[i][j]+grid[i+1][j+1])/2));
+  if(frac>0.02){
+   if((tl!==br)||(tr!==bl)){
+    const e1=edges[mask%4],e2=edges[(mask+2)%4];
+    segments.push([e1[0],e2[1]]);
+   }
+  }
+ }
+ let svg='';
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++){
+  const v=Math.max(0,Math.min(1,(grid[i][j]+1)/3));
+  svg+=`<rect x="${tx(j)}" y="${ty(i)}" width="${cell}" height="${cell}" fill="hsl(220,40%,${20+v*40}%)"/>`;
+ }
+ for(const[s1,s2]of segments){
+  svg+=`<line x1="${s1[0]}" y1="${s1[1]}" x2="${s2[0]}" y2="${s2[1]}" stroke="var(--accent)" stroke-width="2"/>`;
+ }
+ return {
+  encoded:`Grid: ${n} by ${n}\nIso-value: ${iso}\nContour segments: ${segments.length}`,
+  html:svgPlot(w,h,svg),
+  decoded:`Marching squares: for each grid cell, compare corners to the iso-value. Emit contour segments for edges that cross. Blue lines = contour.`
+ };
+}
+function demoRansac(text){
+ const parts=parsePointsAndNumber(text);
+ const points=parts.points;
+ const threshold=parts.num||0.5;
+ function fitLine(p1,p2){
+  const x1=p1[0],y1=p1[1],x2=p2[0],y2=p2[1];
+  const a=y2-y1,b=x1-x2,c=-(a*x1+b*y1);
+  return [a,b,c];
+ }
+ function dist(p,line){
+  const[a,b,c]=line;
+  return Math.abs(a*p[0]+b*p[1]+c)/Math.hypot(a,b);
+ }
+ let bestModel=null,bestInliers=[];
+ let s=42;
+ const rnd=()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff};
+ for(let it=0;it<100;it++){
+  const i=Math.floor(rnd()*points.length);
+  let j=Math.floor(rnd()*points.length);
+  while(j===i)j=Math.floor(rnd()*points.length);
+  const model=fitLine(points[i],points[j]);
+  const inliers=points.filter(p=>dist(p,model)<threshold);
+  if(inliers.length>bestInliers.length){bestInliers=inliers;bestModel=model}
+ }
+ const {tx,ty}=bbox(points,50);
+ let svg='';
+ for(const p of points){
+  const isIn=bestInliers.includes(p);
+  svg+=`<circle cx="${tx(p[0])}" cy="${ty(p[1])}" r="4" fill="${isIn?'var(--good)':'var(--bad)'}"/>`;
+ }
+ if(bestModel){
+  const[a,b,c]=bestModel;
+  const L=Math.max(...points.map(p=>p[0]))-Math.min(...points.map(p=>p[0]));
+  const px=-b*a/(a*a+b*b)||0,py=-b*b/(a*a+b*b)||0;
+  let x1,y1,x2,y2;
+  if(Math.abs(b)>Math.abs(a)){
+   y1=Math.min(...points.map(p=>p[1]));
+   y2=Math.max(...points.map(p=>p[1]));
+   x1=-(b*y1+c)/a;
+   x2=-(b*y2+c)/a;
+  }else{
+   x1=Math.min(...points.map(p=>p[0]));
+   x2=Math.max(...points.map(p=>p[0]));
+   y1=-(a*x1+c)/b;
+   y2=-(a*x2+c)/b;
+  }
+  svg+=`<line x1="${tx(x1)}" y1="${ty(y1)}" x2="${tx(x2)}" y2="${ty(y2)}" stroke="var(--accent)" stroke-width="2"/>`;
+ }
+ return {
+  encoded:`RANSAC line fit\nPoints: ${points.length}\nInliers: ${bestInliers.length} (${(bestInliers.length/points.length*100).toFixed(1)}%)\nThreshold: ${threshold}\n\nFitted line: ${bestModel.map(v=>fmtNum(v)).join('x + ')} = 0`,
+  html:svgPlot(700,400,svg),
+  decoded:`RANSAC samples minimal subsets, fits a model, and counts inliers. Blue = fitted line, green = inliers, red = outliers.`
+ };
+}
+function demoJps(text){
+ const lines=text.trim().split(/\n/);
+ const dims=lines[0].split(/\s+/).map(Number);
+ const R=dims[0]||15,C=dims[1]||15;
+ const start=(lines[1]||'0 0').split(/\s+/).map(Number);
+ const goal=(lines[2]||`${R-1} ${C-1}`).split(/\s+/).map(Number);
+ const obstacles=[];
+ for(let i=3;i<lines.length;i++){
+  const parts=lines[i].split(/\s+/).map(Number);
+  if(parts.length===4){
+   for(let r=parts[0];r<=parts[2];r++)for(let c=parts[1];c<=parts[3];c++)obstacles.push([r,c]);
+  }
+ }
+ const grid=Array.from({length:R},()=>new Array(C).fill(0));
+ for(const[r,c]of obstacles)if(r>=0&&r<R&&c>=0&&c<C)grid[r][c]=1;
+ // BFS for path
+ const q=[[start[0],start[1],[[start[0],start[1]]]]];
+ const seen=new Set([start[0]+','+start[1]]);
+ let path=null;
+ while(q.length){
+  const[r,c,p]=q.shift();
+  if(r===goal[0]&&c===goal[1]){path=p;break}
+  for(const[dr,dc]of[[-1,0],[1,0],[0,-1],[0,1]]){
+   const nr=r+dr,nc=c+dc;
+   if(nr<0||nr>=R||nc<0||nc>=C||grid[nr][nc]===1)continue;
+   const k=nr+','+nc;
+   if(seen.has(k))continue;
+   seen.add(k);
+   q.push([nr,nc,p.concat([[nr,nc]])]);
+  }
+ }
+ const cell=Math.min(600/Math.max(R,C),30);
+ const w=C*cell+20,h=R*cell+20;
+ const tx=c=>c*cell+10,ty=r=>r*cell+10;
+ let svg='';
+ for(let r=0;r<R;r++)for(let c=0;c<C;c++){
+  const color=grid[r][c]===1?'var(--bad)':'var(--panel3)';
+  svg+=`<rect x="${tx(c)}" y="${ty(r)}" width="${cell}" height="${cell}" fill="${color}" stroke="var(--line)" stroke-width="0.5"/>`;
+ }
+ if(path){
+  for(const[r,c]of path){
+   svg+=`<rect x="${tx(c)+2}" y="${ty(r)+2}" width="${cell-4}" height="${cell-4}" fill="var(--accent)" opacity="0.5"/>`;
+  }
+ }
+ svg+=`<circle cx="${tx(start[1])+cell/2}" cy="${ty(start[0])+cell/2}" r="4" fill="var(--good)"/>`;
+ svg+=`<circle cx="${tx(goal[1])+cell/2}" cy="${ty(goal[0])+cell/2}" r="4" fill="var(--warn)"/>`;
+ return {
+  encoded:`Grid: ${R} × ${C}\nStart: (${start})\nGoal: (${goal})\nObstacles: ${obstacles.length}\n\nPath length: ${path?path.length:'no path'}`,
+  html:svgPlot(w,h,svg),
+  decoded:`Grid pathfinding with obstacles. Jump Point Search would prune symmetric paths, but this demo uses standard BFS.`
+ };
+}
+
+/* ============================================================
+   Lab dispatcher
+   ============================================================ */
+function runLab(l,initial){
+ const input=$('#labInput').value;
+ let res;
+ try{
+  if(!initial){$('#labEncoded').textContent='Running…';$('#labDecoded').textContent=''}
+  switch(l.demo){
+   case'points':res=demoPoints(input);break;
+   case'orientation':res=demoOrientation(input);break;
+   case'distances':res=demoDistances(input);break;
+   case'segments':res=demoSegments(input);break;
+   case'point-in-poly':res=demoPointInPoly(input);break;
+   case'graham':res=demoGraham(input);break;
+   case'monotone':res=demoMonotone(input);break;
+   case'jarvis':res=demoJarvis(input);break;
+   case'quickhull':res=demoQuickhull(input);break;
+   case'closest-pair':res=demoClosestPair(input);break;
+   case'kd-tree-geo':res=demoKdTreeGeo(input);break;
+   case'delaunay':res=demoDelaunay(input);break;
+   case'lloyd':res=demoLloyd(input);break;
+   case'calipers':res=demoCalipers(input);break;
+   case'diameter-rect':res=demoDiameterRect(input);break;
+   case'welzl':res=demoWelzl(input);break;
+   case'sat':res=demoSat(input);break;
+   case'douglas-peucker':res=demoDouglasPeucker(input);break;
+   case'marching':res=demoMarching(input);break;
+   case'ransac':res=demoRansac(input);break;
+   case'jps':res=demoJps(input);break;
+   default:throw Error('No interactive implementation is available for this lesson.');
+  }
+ }catch(e){
+  res={encoded:'Input or runtime error',decoded:e.message};
+ }
+ const el=$('#labEncoded');
+ if(res.html){el.innerHTML=res.html+'\n\n'+res.encoded}else{el.textContent=res.encoded}
+ $('#labDecoded').textContent=res.decoded;
+ if(!initial)toast('Lab complete');
+}
+
+/* ============================================================
+   State and shell
+   ============================================================ */
+const state={page:'home',current:null,completed:new Set(),bookmarks:new Set(),theme:'system',drafts:{}};
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1900)}
+function save(){try{localStorage.setItem('az-geometry-lab-v1',JSON.stringify({schemaVersion:1,completed:[...state.completed],bookmarks:[...state.bookmarks],theme:state.theme,current:state.current,drafts:state.drafts}))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem('az-geometry-lab-v1')||'null');if(!d||d.schemaVersion!==1)return;
+ state.completed=new Set((d.completed||[]).filter(id=>byId[id]));
+ state.bookmarks=new Set((d.bookmarks||[]).filter(id=>byId[id]));
+ state.theme=['system','light','dark'].includes(d.theme)?d.theme:'system';
+ state.current=byId[d.current]?d.current:null;
+ state.drafts=d.drafts&&typeof d.drafts==='object'?d.drafts:{};}catch(e){}}
+function applyTheme(){let t=state.theme;if(t==='system')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t;$('#themeSelect').value=state.theme}
+function getChapter(id){return CHAPTERS.find(c=>c.ids.includes(id))||CHAPTERS[0]}
+function progress(){
+ const n=state.completed.size,t=LESSONS.length;
+ $('#progressText').textContent=`${n} / ${t}`;
+ $('#progressFill').style.width=(n/t*100)+'%';
+ $('#lessonCount').textContent=t+' lessons';
+ $('#catalogCount').textContent=`${CHAPTERS.length} chapters · ${t} lessons · ${LESSONS.filter(l=>l.demo&&l.demo!=='none').length} labs`;
+ $('#progressBar').setAttribute('aria-valuenow',String(Math.round(n/t*100)));
+}
+function renderTree(){
+ const q=$('#searchInput').value.toLowerCase().trim(),ch=$('#chapterFilter').value;
+ const root=$('#courseTree');root.textContent='';
+ for(const c of CHAPTERS){
+  if(ch!=='all'&&c.id!==ch)continue;
+  const rows=c.ids.map(id=>byId[id]).filter(x=>x&&(!q||(x.title+' '+x.summary+' '+x.kind+' '+c.title).toLowerCase().includes(q)));
+  if(!rows.length)continue;
+  const group=document.createElement('section');
+  const label=document.createElement('div');label.className='group-label';
+  label.innerHTML=`<span>${esc(c.title)}</span><span>${rows.length}</span>`;
+  group.append(label);
+  rows.forEach(l=>{
+   const b=document.createElement('button');b.type='button';
+   b.className='link'+(state.current===l.id?' active':'');
+   b.dataset.lesson=l.id;
+   b.innerHTML=`<span class="num">${String(LESSONS.indexOf(l)+1).padStart(2,'0')}</span><span class="name">${esc(l.title)}</span>${state.completed.has(l.id)?'<span class="done" aria-label="completed">✓</span>':''}`;
+   group.append(b);
+  });
+  root.append(group);
+ }
+ if(!root.children.length)root.innerHTML='<p class="muted">No matching lessons. Try another search.</p>';
+ progress();
+}
+function listToHTML(a){return `<ol class="steps">${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`}
+function refsHTML(r){return r&&r.length?`<div class="references">${r.map(x=>`<a target="_blank" rel="noopener noreferrer" href="${esc(x[1])}">${esc(x[0])} ↗</a>`).join('')}</div>`:'<p class="muted">See the recommended textbooks and papers for a full treatment.</p>'}
+function codeRecord(l){if(l.codeKey==='none')return null;return CODE[l.codeKey]||CODE[l.demo]||null}
+function codeText(l){
+ const c=codeRecord(l);
+ if(c&&c.python)return c.python;
+ return '# CONCEPT OUTLINE, NOT EXECUTABLE PYTHON\n# Lesson: '+l.title+'\n\n# Core idea\n# '+String(l.summary||'').replace(/\n/g,'\n# ')+'\n\n# Pseudocode from the lesson\n'+String(l.pseudo||'').split('\n').map(x=>'# '+x).join('\n')+'\n';
+}
+function statusClass(l){return /Runnable/.test(l.status)?'good':'warn'}
+
+function renderLesson(id){
+ const l=byId[id];if(!l){renderHome();return}
+ state.page='lesson';state.current=id;
+ const c=getChapter(id);const index=LESSONS.indexOf(l);const next=LESSONS[(index+1)%LESSONS.length];
+ const hasDemo=l.demo&&l.demo!=='none';
+ const demoArea=hasDemo?`<section class="panel"><div class="panel-head"><h2>${esc(l.demoTitle||'Interactive teaching lab')}</h2><p>Everything runs in your browser with SVG rendering. This is a teaching model, not a production geometry library.</p></div><div class="body"><div class="lab-top"><label for="labInput">Input</label><button class="btn" id="resetSample">Reset sample</button><button class="btn primary" id="runLab">Run lab</button></div><textarea class="lab-input" id="labInput" aria-label="Lab input">${esc(l.sample||'')}</textarea><div class="notice info"><strong>Format:</strong> most labs take points as "x y" one per line. Some take a blank line to separate two parts (polygons, points from query). See the sample for the exact format.</div><div class="lab-cols"><div><div class="label">Output</div><div class="lab-output" id="labEncoded">Run the lab to see output.</div></div><div><div class="label">Explanation</div><div class="lab-output" id="labDecoded">Step notes appear here.</div></div></div></div></section>`:'';
+ const references=refsHTML(l.refs);
+ const code=state.drafts[id]??codeText(l);
+ $('#mainView').innerHTML=`<div class="breadcrumb">Geometry Lab / ${esc(c.title)}</div>
+<header class="header">
+ <div class="eyebrow">LESSON ${String(index+1).padStart(2,'0')} · ${esc(l.kind)}</div>
+ <h1>${esc(l.title)}</h1>
+ <p>${esc(l.summary)}</p>
+ <div class="tags"><span class="tag">Level ${l.level}</span><span class="tag ${statusClass(l)}">${esc(l.status)}</span><span class="tag">${esc(c.title.replace(/^\d+\.\s*/,''))}</span></div>
+ <div class="header-actions">
+  <button class="btn" id="bookmarkBtn">${state.bookmarks.has(id)?'★ Bookmarked':'☆ Bookmark'}</button>
+  <button class="btn primary" id="completeBtn">${state.completed.has(id)?'✓ Completed':'Mark complete'}</button>
+ </div>
+</header>
+<section class="panel"><div class="panel-head"><h2>1. Understand the idea</h2><p>Plain language and a mental picture</p></div><div class="body idea"><div><p>${esc(l.summary)}</p><p><strong>What problem it solves:</strong> ${esc(l.problem)}</p><div class="takeaway"><strong>Takeaway:</strong> ${esc(l.output)}</div></div><aside class="mental"><small>Mental picture</small><strong>${esc(l.mental)}</strong><p>${esc(l.mentalText)}</p></aside></div></section>
+<section class="panel"><div class="panel-head"><h2>2. Input and output</h2><p>Know what goes in and what comes out</p></div><div class="body two"><div class="mini"><h3>Input</h3><p>${esc(l.input)}</p></div><div class="mini"><h3>Output</h3><p>${esc(l.output)}</p></div></div></section>
+<section class="panel"><div class="panel-head"><h2>3. How it works</h2><p>Step by step, with the key rule that makes it correct</p></div><div class="body two"><div>${listToHTML(l.steps)}<div class="takeaway" style="margin-top:14px"><strong>Key rule:</strong> ${esc(l.invariant)}</div></div><pre class="pseudo">${esc(l.pseudo)}</pre></div><div class="table-wrap" style="margin-top:16px"><table><thead><tr><th>Step</th><th>What happens</th><th>Why it matters</th></tr></thead><tbody>${l.trace.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>
+${demoArea}
+<section class="panel"><div class="panel-head"><h2>4. Cost and stability</h2><p>Costs depend on the number of objects, degeneracies and floating point precision. These are scope labels, not universal benchmarks.</p></div><div class="body"><div class="tiles">${l.complexity.map((x,i)=>`<div class="tile"><span>${['Time','Space','Interpretation'][i]}</span><strong>${esc(x.split(' ').slice(0,2).join(' '))}</strong><small>${esc(x)}</small></div>`).join('')}</div><div class="two" style="margin-top:12px"><div class="mini"><h3>Strengths</h3><p>${esc(l.strength)}</p></div><div class="mini"><h3>Limits</h3><p>${esc(l.limits)}</p></div></div></div></section>
+<section class="panel"><div class="panel-head"><h2>5. Code and usage</h2><p>Reference code is for learning. Real code should use a vetted geometry library.</p></div><div class="code-head"><div><span class="tag">${codeRecord(l)?'Python example':'Concept outline, not executable'}</span> <span class="tag">Editable</span></div><div class="header-actions" style="margin:0"><button class="btn" id="copyCode">Copy code</button><button class="btn" id="downloadCode">Download</button></div></div><textarea id="codeEditor" class="code-editor" spellcheck="false" aria-label="Editable Python code">${esc(code)}</textarea><div class="code-foot"><span>${codeRecord(l)?'Reference example. The in-page lab runs its own JavaScript implementation.':'Lesson-specific outline, not an implementation.'}</span><span id="codeStatus">Local draft</span></div><div class="body"><div class="mini"><h3>Where it is used</h3><p>${esc(l.uses)}</p></div><div class="notice" style="margin-top:12px"><strong>Common pitfall:</strong> ${esc(l.pitfall)}</div></div></section>
+<section class="panel"><div class="panel-head"><h2>6. Choices and alternatives</h2><p>Pick based on the problem, the dimension and the required precision</p></div><div class="body two"><div class="mini"><h3>When to use this</h3><p>${esc(l.strength)}</p></div><div class="mini"><h3>When to use something else</h3><p>${esc(l.limits)}</p></div></div></section>
+<section class="panel"><div class="panel-head"><h2>7. Check yourself</h2><p>Try to answer before you open the explanation</p></div><div class="body"><details class="practice"><summary>${esc(l.question)}</summary><p>${esc(l.answer)}</p></details></div></section>
+<section class="panel"><div class="panel-head"><h2>8. References</h2><p>Standard references for this topic</p></div><div class="body">${references}<p class="muted" style="font-size:11.5px;margin-top:14px">The labs on this page are teaching implementations. For production work use CGAL, Boost.Geometry, Shapely, scipy.spatial, or another vetted geometry library.</p></div></section>
+<footer class="footer"><span>Az Geometry Lab · local learning</span><span>Lesson ${index+1} of ${LESSONS.length} · Next: ${esc(next.title)}</span><button class="btn" id="nextLesson">Next →</button></footer>`;
+
+ $('#bookmarkBtn').onclick=()=>{state.bookmarks.has(id)?state.bookmarks.delete(id):state.bookmarks.add(id);save();renderLesson(id);toast(state.bookmarks.has(id)?'Bookmarked':'Bookmark removed')};
+ $('#completeBtn').onclick=()=>{state.completed.has(id)?state.completed.delete(id):state.completed.add(id);save();renderTree();renderLesson(id);toast(state.completed.has(id)?'Lesson completed':'Completion removed')};
+ $('#nextLesson').onclick=()=>openLesson(next.id);
+ $('#copyCode').onclick=async()=>{const v=$('#codeEditor').value;try{await navigator.clipboard.writeText(v);toast('Code copied')}catch{const ta=$('#codeEditor');ta.select();document.execCommand('copy');toast('Code copied')}};
+ $('#downloadCode').onclick=()=>{const r=codeRecord(l);downloadText(`${id}.${r?'py':'txt'}`,$('#codeEditor').value,r?'text/x-python':'text/plain')};
+ $('#codeEditor').addEventListener('input',()=>{state.drafts[id]=$('#codeEditor').value;save();$('#codeStatus').textContent='Draft saved locally'});
+ if(hasDemo){
+  $('#runLab').onclick=()=>runLab(l);
+  $('#resetSample').onclick=()=>{$('#labInput').value=l.sample||'';$('#labEncoded').textContent='Run the lab to see output.';$('#labDecoded').textContent='Step notes appear here.'};
+  runLab(l,true);
+ }
+ renderTree();save();
+ if(location.hash!==`#${id}`)history.replaceState(null,'',`#${id}`);
+}
+
+function renderHome(){
+ state.page='home';
+ $('#mainView').innerHTML=`<div class="home-hero"><div class="eyebrow">AZ · ENGINEERING TOOLBOOK</div><h1>Understand computational geometry from orientation to JPS pathfinding.</h1><p>A beginner friendly course covering geometric primitives, segment and polygon problems, convex hulls, proximity structures, Voronoi and Delaunay, hull applications, arrangements, collision detection, simplification, and registration and pathfinding. Every lesson has a plain explanation and most have a runnable lab with SVG rendering.</p><div class="header-actions" style="margin:0"><button class="btn primary" id="startFirst">Start at the beginning</button><button class="btn" id="resumeLesson">Continue lesson</button></div></div>
+<div class="stats"><div class="stat"><strong>${CHAPTERS.length}</strong><span>chapters</span></div><div class="stat"><strong>${LESSONS.length}</strong><span>lessons</span></div><div class="stat"><strong>${LESSONS.filter(l=>l.demo&&l.demo!=='none').length}</strong><span>runnable labs</span></div><div class="stat"><strong>1</strong><span>standalone HTML file</span></div></div>
+<section class="panel"><div class="panel-head"><h2>Honest scope</h2><p>One app covers the whole curriculum. Production geometry libraries are a separate engineering project.</p></div><div class="body two"><div class="mini"><h3>What runs here</h3><p>Points and vectors, orientation, distances, segment intersection, point-in-polygon by ray casting, Graham scan, Andrew monotone chain, Jarvis march, Quickhull, closest pair (brute force), k-d tree nearest neighbour, Delaunay (naive O(n³) via circumcircle test), Lloyd relaxation (k-means approximation), rotating calipers diameter, minimum-area rectangle, Welzl smallest enclosing circle, SAT 2D collision, Douglas-Peucker simplification, marching squares, RANSAC line fitting, and grid BFS pathfinding.</p></div><div class="mini"><h3>What does not run here</h3><p>Production implementations of Fortune's algorithm, Bowyer-Watson Delaunay, half-plane intersection, line arrangements, alpha shapes, medial axis, GJK/EPA, Minkowski sums, marching cubes, mesh decimation, ICP, homography estimation, D* Lite, Theta*, and full Jump Point Search. For real work use CGAL, Boost.Geometry, Shapely, scipy.spatial, or another vetted library.</p></div></div></section>
+<div class="panel"><div class="panel-head"><h2>Course map</h2><p>Pick a chapter. The path runs from primitives to pathfinding.</p></div><div class="body"><div class="chapter-cards">${CHAPTERS.map((c,i)=>`<button class="chapter-card" data-chapter="${c.id}"><span class="num">CHAPTER ${String(i+1).padStart(2,'0')} · ${c.ids.length} LESSONS</span><strong>${esc(c.title.replace(/^\d+\.\s*/,''))}</strong><p>${esc(c.desc)}</p></button>`).join('')}</div></div></div>
+<footer class="footer"><span>Az Geometry Lab</span><span>Single file · no external runtime dependencies</span></footer>`;
+ $('#startFirst').onclick=()=>openLesson('points-vectors');
+ $('#resumeLesson').onclick=()=>openLesson(state.current&&byId[state.current]?state.current:'points-vectors');
+ $('#mainView').querySelectorAll('[data-chapter]').forEach(b=>b.onclick=()=>{const c=CHAPTERS.find(x=>x.id===b.dataset.chapter);if(c)openLesson(c.ids[0])});
+}
+
+function renderProgressPage(){
+ state.page='progress';
+ $('#mainView').innerHTML=`<div class="breadcrumb">Geometry Lab / Bookmarks & progress</div><header class="header"><div class="eyebrow">LOCAL ONLY</div><h1>Bookmarks and progress</h1><p>Your progress stays in this browser. Export the JSON to move it or keep a backup.</p></header>
+<section class="panel"><div class="panel-head"><h2>Completed lessons</h2></div><div class="body">${state.completed.size?`<div class="references">${[...state.completed].map(id=>`<a href="#${id}" data-open="${id}">${esc(byId[id].title)}</a>`).join('')}</div>`:'<p class="muted">No lessons marked complete yet.</p>'}</div></section>
+<section class="panel"><div class="panel-head"><h2>Bookmarks</h2></div><div class="body">${state.bookmarks.size?`<div class="references">${[...state.bookmarks].map(id=>`<a href="#${id}" data-open="${id}">${esc(byId[id].title)}</a>`).join('')}</div>`:'<p class="muted">No bookmarks yet.</p>'}</div></section>
+<section class="panel"><div class="panel-head"><h2>Progress data</h2></div><div class="body"><div class="header-actions" style="margin:0"><button class="btn primary" id="exportProgress">Export progress JSON</button><button class="btn" id="clearProgress">Clear completion marks</button></div><p class="muted" style="font-size:12.5px;margin-top:14px">Import accepts only known lesson IDs and a supported schema version.</p></div></section>`;
+ $('#mainView').querySelectorAll('[data-open]').forEach(a=>a.onclick=e=>{e.preventDefault();openLesson(a.dataset.open)});
+ $('#exportProgress').onclick=exportProgress;
+ $('#clearProgress').onclick=()=>{if(confirm('Clear all completion marks?')){state.completed.clear();save();renderProgressPage();renderTree();toast('Completion marks cleared')}};
+}
+
+function openLesson(id){if(!byId[id])return;renderLesson(id);renderTree();$('#mainView').focus({preventScroll:true});window.scrollTo(0,0)}
+function downloadText(name,text,type='text/plain'){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800)}
+function exportProgress(){downloadText('az-geometry-lab-progress.json',JSON.stringify({schemaVersion:1,completed:[...state.completed],bookmarks:[...state.bookmarks],theme:state.theme,current:state.current,drafts:state.drafts},null,2),'application/json');toast('Progress exported')}
+function importProgressFile(file){
+ if(file.size>2_000_000){toast('Import rejected: file too large');return}
+ const r=new FileReader();
+ r.onload=()=>{try{
+  const d=JSON.parse(r.result);
+  if(!d||d.schemaVersion!==1||!Array.isArray(d.completed)||!Array.isArray(d.bookmarks)||typeof d.drafts!=='object')throw Error('bad schema');
+  if([...d.completed,...d.bookmarks].some(id=>typeof id!=='string'||!byId[id]))throw Error('unknown id');
+  state.completed=new Set(d.completed);
+  state.bookmarks=new Set(d.bookmarks);
+  state.theme=['system','light','dark'].includes(d.theme)?d.theme:'system';
+  state.current=byId[d.current]?d.current:null;
+  state.drafts=Object.fromEntries(Object.entries(d.drafts).filter(([k,v])=>byId[k]&&typeof v==='string'&&v.length<100000));
+  applyTheme();save();renderTree();
+  state.current?openLesson(state.current):renderHome();
+  toast('Progress imported');
+ }catch(e){toast('Import rejected: invalid progress data')}};
+ r.readAsText(file);
+}
+
+function bindGlobal(){
+ $('#themeSelect').onchange=()=>{state.theme=$('#themeSelect').value;applyTheme();save()};
+ $('#printBtn').onclick=()=>print();
+ $('#exportBtn').onclick=exportProgress;
+ $('#importBtn').onclick=()=>$('#importFile').click();
+ $('#importFile').onchange=e=>{if(e.target.files[0])importProgressFile(e.target.files[0]);e.target.value=''};
+ $('#searchInput').oninput=renderTree;
+ $('#chapterFilter').onchange=renderTree;
+ $('#homeLink').onclick=e=>{e.preventDefault();renderHome();history.replaceState(null,'','#home')};
+ $('#courseTree').onclick=e=>{const b=e.target.closest('[data-lesson]');if(b)openLesson(b.dataset.lesson)};
+ document.querySelectorAll('[data-page="home"]').forEach(b=>b.onclick=renderHome);
+ document.querySelectorAll('[data-page="progress"]').forEach(b=>b.onclick=renderProgressPage);
+ document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();$('#searchInput').focus()}
+  if(e.key.toLowerCase()==='t'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){
+   state.theme=state.theme==='dark'?'light':state.theme==='light'?'system':'dark';
+   applyTheme();save();
+  }
+ });
+}
+
+function init(){
+ load();
+ applyTheme();
+ CHAPTERS.forEach(c=>{const op=document.createElement('option');op.value=c.id;op.textContent=c.title;$('#chapterFilter').append(op)});
+ bindGlobal();
+ renderTree();
+ const hash=location.hash.replace(/^#/,'');
+ if(hash&&byId[hash])renderLesson(hash);
+ else if(state.current&&byId[state.current])renderLesson(state.current);
+ else renderHome();
+ progress();
+}
+init();
+</script></body></html>
